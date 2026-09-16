@@ -1,0 +1,413 @@
+{
+  "version": "1.0",
+  "last_sync": "2026-09-16",
+  "accounts": [
+    {
+      "category": "MSEB",
+      "person": "SUSHIL UNCLE",
+      "id": "430010420321",
+      "extra": "BU: 1937",
+      "name": "SMTRADHABAI REWACHAND HARIRAMANI"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUSHIL UNCLE",
+      "id": "430010126058",
+      "extra": "BU: 1937",
+      "name": "SHRI REWACHAND BUDHARMAL HARIRAMANI"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUSHIL UNCLE",
+      "id": "430017316651",
+      "extra": "BU: 1937",
+      "name": "SUSHILKUMAR REWACHAND HARIRAMANI"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUSHIL UNCLE",
+      "id": "430040099926",
+      "extra": "BU: 0390",
+      "name": "SHRI REWACHAND BUDHARMAL HARIRAMANI"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUSHIL UNCLE",
+      "id": "430010276980",
+      "extra": "BU: 1937",
+      "name": "SHRI SHANKARLAL REWACHAND HARIRAMANI"
+    },
+    {
+      "category": "MSEB",
+      "person": "ASHWIN UNCLE",
+      "id": "430017341264",
+      "extra": "BU: 1937",
+      "name": "ASWINKUMAR CHANDRAKANT CHITARKA AGRAWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "ASHWIN UNCLE",
+      "id": "430010202111",
+      "extra": "BU: 1937",
+      "name": "SMT PUSHPADEVI CHANDRAKANT CHHITARKA"
+    },
+    {
+      "category": "MSEB",
+      "person": "ASHWIN UNCLE",
+      "id": "430010161597",
+      "extra": "BU: 1937",
+      "name": "SHRI CHANDRAKANT CHHAGANLAL AGRAWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "PAYAL JEWELLERS",
+      "id": "430010299700",
+      "extra": "BU: 1937",
+      "name": "SHRI CHANDRAKANT CHAGANLAL CHITRAKA"
+    },
+    {
+      "category": "MSEB",
+      "person": "PAYAL JEWELLERS",
+      "id": "430011429372",
+      "extra": "BU: 1937",
+      "name": "SUSHIL CHANDRAKANT CHHITARKA"
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430010145648",
+      "extra": "BU: 1937",
+      "name": "THE CHIEF OFFICER M.C."
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430010118268",
+      "extra": "BU: 1937",
+      "name": "DR OMPRAKASH D TASHNIWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430017373409",
+      "extra": "BU: 1937",
+      "name": "SANJAYKUMAR GIRISHBHAI BHAGDEO"
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430010038531",
+      "extra": "BU: 1937",
+      "name": "SHRI D. NATHUBHAI"
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430010258914",
+      "extra": "BU: 1937",
+      "name": "SHRI KANTILAL JAMNADAS BHAGDEV"
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430014490838",
+      "extra": "BU: 1937",
+      "name": "VARSHA SANJAY BHAGDEV"
+    },
+    {
+      "category": "MSEB",
+      "person": "SANJU UNCLE",
+      "id": "430010010122",
+      "extra": "BU: 1937",
+      "name": "SANJAYKUMAR GIRISHBHAI BHAGDEO"
+    },
+    {
+      "category": "MSEB",
+      "person": "LUCKY BHIYA",
+      "id": "430010421505",
+      "extra": "BU: 1937",
+      "name": "SHRI LUCCY VIJAY JYMAR KHADELWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "LUCKY BHIYA",
+      "id": "430010187031",
+      "extra": "BU: 1937",
+      "name": "SHRI SANJAY YADORAO HUMANE"
+    },
+    {
+      "category": "MSEB",
+      "person": "GUDDU BHIYA",
+      "id": "430017354111",
+      "extra": "BU: 1937",
+      "name": "SAKET SATISH KHANDELWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "GUDDU BHIYA",
+      "id": "430010198865",
+      "extra": "BU: 1937",
+      "name": "SATISHCHANDRA RADHESHYAM KHANDELWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "GUDDU BHIYA",
+      "id": "430010337300",
+      "extra": "BU: 1937",
+      "name": "SHRI SUBHISH SATISH KHANDALWAL"
+    },
+    {
+      "category": "MSEB",
+      "person": "RAVI GABBI BHIYA",
+      "id": "433650230217",
+      "extra": "BU: 0390",
+      "name": "PURANSINGH KARTARSINGH"
+    },
+    {
+      "category": "MSEB",
+      "person": "RAVI GABBI BHIYA",
+      "id": "430360009305",
+      "extra": "BU: 0388",
+      "name": "AMARJEETKAYR GURUJEETSINGHGABBI"
+    },
+    {
+      "category": "MSEB",
+      "person": "RAVI GABBI BHIYA",
+      "id": "430017327849",
+      "extra": "BU: 1937",
+      "name": "RAVIRAJSINGH GURJITSINGH GABBI"
+    },
+    {
+      "category": "MSEB",
+      "person": "MYSELF",
+      "id": "430010145699",
+      "extra": "BU: 1937",
+      "name": "THE CHIEF OFFICER M C"
+    },
+    {
+      "category": "MSEB",
+      "person": "MYSELF",
+      "id": "430010243640",
+      "extra": "BU: 1937",
+      "name": "SHRI MOTILAL B JAIN"
+    },
+    {
+      "category": "MSEB",
+      "person": "GAURAV KHO",
+      "id": "432850002417",
+      "extra": "BU: 0390",
+      "name": "RANJANABAI SUKHDAS KHOBRAGADE"
+    },
+    {
+      "category": "MSEB",
+      "person": "VILAS BHIYA",
+      "id": "431490021711",
+      "extra": "BU: 0390",
+      "name": "MANIKCHAND BAKARAM PATLE"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUMIT MISHRA",
+      "id": "430011467517",
+      "extra": "BU: 1937",
+      "name": "HIRA JAWAHAR MISHRA"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUMIT MISHRA",
+      "id": "430010041605",
+      "extra": "BU: 1937",
+      "name": "SHRI PANNALAL DIVEDDIN PATWARI"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUMIT MISHRA",
+      "id": "430011467525",
+      "extra": "BU: 1937",
+      "name": "SUMIT JAWAHAR MISHRA"
+    },
+    {
+      "category": "MSEB",
+      "person": "SUMIT MISHRA",
+      "id": "430010137718",
+      "extra": "BU: 1937",
+      "name": "MISS ELEZABATH D BAGHELE"
+    },
+    {
+      "category": "MSEB",
+      "person": "PANPALIYA",
+      "id": "430010200479",
+      "extra": "BU: 1937",
+      "name": "SHRI SUBHASHCHANDRAJI PANPALIYA"
+    },
+    {
+      "category": "MSEB",
+      "person": "VINOD VARADE DELTA MARKETING",
+      "id": "431390712244",
+      "extra": "BU: 0390",
+      "name": "SHRI VINOD WASHANT WAGHADE"
+    },
+    {
+      "category": "MSEB",
+      "person": "NILESH BHIYA",
+      "id": "438290003917",
+      "extra": "BU: 0390",
+      "name": "SHRI BHAGIRATH CHOTELAL YADAO"
+    },
+    {
+      "category": "MSEB",
+      "person": "NILESH BHIYA",
+      "id": "438290012321",
+      "extra": "BU: 0390",
+      "name": "NILESH BHAGIRATH YADAV"
+    },
+    {
+      "category": "LANDLINE",
+      "person": "SUSHIL UNCLE",
+      "id": "07182231199",
+      "extra": "STD: 07182",
+      "name": "RADHABAI REWACHAND HARIRAMANI"
+    },
+    {
+      "category": "LANDLINE",
+      "person": "SUSHIL UNCLE",
+      "id": "07182233939",
+      "extra": "STD: 07182",
+      "name": "RAWACHAND BUBHARMAL HARIRAMANI"
+    },
+    {
+      "category": "LANDLINE",
+      "person": "MYSELF",
+      "id": "07182234595",
+      "extra": "STD: 07182",
+      "name": "DINESH RADHESHYAM AGRAWAL"
+    },
+    {
+      "category": "LIC",
+      "person": "MYSELF",
+      "id": "938753180",
+      "name": "SHUBHAM AGRAWAL",
+      "extra": "DOB: 14-Apr-1998"
+    },
+    {
+      "category": "LIC",
+      "person": "MYSELF",
+      "id": "912659041",
+      "name": "RASHMI AGRAWAL",
+      "extra": "DOB: 24-Jun-1972"
+    },
+    {
+      "category": "LIC",
+      "person": "MYSELF",
+      "id": "978447141",
+      "name": "SURESH AGRAWAL",
+      "extra": "DOB: 26-Jun-1968"
+    },
+    {
+      "category": "LIC",
+      "person": "PARDHI BHIYA",
+      "id": "913510249",
+      "name": "SHASHIKALA PARDHI",
+      "extra": ""
+    },
+    {
+      "category": "LIC",
+      "person": "TANUJ BHIYA",
+      "id": "975215604",
+      "name": "GHANSHYAM VANJARI",
+      "extra": "DOB: 11-Aug-1958"
+    },
+    {
+      "category": "LIC",
+      "person": "TANUJ BHIYA",
+      "id": "975213315",
+      "name": "NISHA VANJARI",
+      "extra": ""
+    },
+    {
+      "category": "LIC",
+      "person": "TANUJ BHIYA",
+      "id": "975214913",
+      "name": "KUNAL VANJARI",
+      "extra": ""
+    },
+    {
+      "category": "LIC",
+      "person": "TANUJ BHIYA",
+      "id": "976928084",
+      "name": "TANUJ VANJARI",
+      "extra": ""
+    },
+    {
+      "category": "WATER BILL",
+      "person": "VIJAY MUNDRA",
+      "id": "102612075",
+      "extra": "Municipal Council Gondia",
+      "name": "VIJAYKUMAR R MUNDRA"
+    },
+    {
+      "category": "WATER BILL",
+      "person": "SANJU UNCLE",
+      "id": "0102602256",
+      "extra": "Municipal Council Gondia",
+      "name": "GIRISH T BHAGDEO"
+    },
+    {
+      "category": "WATER BILL",
+      "person": "SANJU UNCLE",
+      "id": "0102603082",
+      "extra": "Municipal Council Gondia",
+      "name": "G D ASHTIKAR"
+    },
+    {
+      "category": "WATER BILL",
+      "person": "MYSELF",
+      "id": "102612581",
+      "extra": "Municipal Council Gondia",
+      "name": "SURESHKUMAR R AGRAWAL"
+    },
+    {
+      "category": "WATER BILL",
+      "person": "SUSHIL UNCLE",
+      "id": "0102604590",
+      "extra": "Municipal Council Gondia",
+      "name": "REWACHAND BUDHARMAL HARIRAMANI"
+    },
+    {
+      "category": "WATER BILL",
+      "person": "SUMIT MISHRA",
+      "id": "102605632",
+      "extra": "Municipal Council Gondia",
+      "name": "JAWAHAR PANNALAL MISHRA"
+    },
+    {
+      "category": "CC BILLS",
+      "person": "CHAITANYA KHANDELWAL",
+      "id": "IDFC (Ending 0379)",
+      "extra": "Registered Mob: 9325890121",
+      "name": "CHAITANYA KHANDELWAL"
+    },
+    {
+      "category": "CC BILLS",
+      "person": "CHAITANYA KHANDELWAL",
+      "id": "SBI TATA (Ending 0856)",
+      "extra": "Registered Mob: 9325890121",
+      "name": "CHAITANYA KHANDELWAL"
+    },
+    {
+      "category": "CC BILLS",
+      "person": "CHAITANYA KHANDELWAL",
+      "id": "AXIS (Ending 9810)",
+      "extra": "Registered Mob: 9325890121",
+      "name": "CHAITANYA KHANDELWAL"
+    },
+    {
+      "category": "LOANS REPAYMENTS",
+      "person": "MANMEET UNCLE",
+      "id": "P5E3PDH69282123",
+      "extra": "Lender: BAJAJ | PAN: AAVPN9572B4Z1 | Mob: 7875028220",
+      "name": "MANMEET UNCLE"
+    }
+  ],
+  "payment_history": []
+}

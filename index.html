@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure PayHub - Multi-Device Sync</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --card: #151d2e;
+    --border: #243048;
+    --primary: #38bdf8;
+    --accent: #10b981;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --danger: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: var(--bg); color: var(--text); padding: 14px; min-height: 100vh; }
+  .container { max-width: 1050px; margin: 0 auto; }
+  
+  /* Top Nav */
+  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  h1 { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+  .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Buttons & Inputs */
+  input, select, button, textarea { border-radius: 8px; border: 1px solid var(--border); background: #0c1322; color: #fff; padding: 8px 12px; font-size: 0.88rem; }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); outline: none; }
+  button { background: #0284c7; color: white; cursor: pointer; font-weight: 600; border: none; transition: 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+  button:hover { filter: brightness(1.15); }
+  .btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: 6px; }
+  .btn-ghost { background: var(--card); border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { color: #fff; border-color: var(--primary); }
+  .btn-accent { background: var(--accent); color: #022c22; }
+  .btn-danger { background: #991b1b; }
+
+  /* Lock / Unlock Screen */
+  .auth-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 26px; max-width: 500px; margin: 50px auto; text-align: center; }
+  .pass-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 16px 0; }
+
+  /* Category Navigation */
+  .tabs-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; scrollbar-width: none; }
+  .tab-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 7px 14px; border-radius: 20px; white-space: nowrap; font-size: 0.82rem; }
+  .tab-btn.active { background: var(--primary); color: #0f172a; font-weight: 700; border-color: var(--primary); }
+  
+  .search-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .search-box { flex: 1; }
+
+  /* Cards Grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .person-badge { font-size: 0.78rem; font-weight: 700; color: var(--primary); background: #082f49; padding: 2px 8px; border-radius: 4px; }
+  .cat-badge { font-size: 0.72rem; color: var(--muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; }
+  .id-box { display: flex; justify-content: space-between; align-items: center; background: #090e1a; padding: 8px 10px; border-radius: 6px; margin: 8px 0; border: 1px solid #1a2336; }
+  .id-val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.05rem; font-weight: 700; color: #38bdf8; word-break: break-all; }
+
+  /* Logs & Modals */
+  .section-box { margin-top: 28px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .log-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.82rem; }
+  .log-table th, .log-table td { border-bottom: 1px solid var(--border); padding: 8px 6px; text-align: left; }
+  .log-table th { color: var(--muted); font-weight: 600; }
+  
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 99; padding: 14px; }
+  .modal-backdrop.open { display: flex; }
+  .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 440px; padding: 20px; }
+  .form-row { margin-bottom: 12px; }
+  .form-row label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; }
+  .form-row input, .form-row select, .form-row textarea { width: 100%; }
+
+  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: #022c22; font-weight: 700; padding: 10px 18px; border-radius: 8px; display: none; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .sync-status { font-size: 0.75rem; display: flex; align-items: center; gap: 4px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #64748b; }
+  .dot.green { background: #10b981; }
+  .dot.orange { background: #f59e0b; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Authentication / 3-Split Unlock Screen -->
+  <div id="authScreen" class="auth-card">
+    <div style="font-size:2.4rem; margin-bottom:10px;">🛡️</div>
+    <h2>Encrypted Vault Login</h2>
+    <p style="color:var(--muted); font-size:0.85rem; margin-top:6px;">Multi-Device 3-Split Bot Protection</p>
+    
+    <div class="pass-grid">
+      <input type="password" id="p1" placeholder="Part 1" autocomplete="off">
+      <input type="password" id="p2" placeholder="Part 2" autocomplete="off">
+      <input type="password" id="p3" placeholder="Part 3" autocomplete="off">
+    </div>
+    
+    <button style="width:100%; padding:10px;" onclick="unlockVault()">🔓 Unlock Vault</button>
+    <div id="authErr" style="color:var(--danger); font-size:0.8rem; margin-top:10px;"></div>
+  </div>
+
+  <!-- Main Application Workspace -->
+  <div id="mainApp" style="display:none;">
+    <div class="header">
+      <div>
+        <h1>⚡ All-in-One Online Payment Hub</h1>
+        <div class="sync-status" id="syncStatus"><span class="dot green"></span> Ready | Multi-Device Connected</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-sm btn-accent" onclick="openAddModal()">➕ Add Entry / Category</button>
+        <button class="btn-sm btn-ghost" onclick="openSyncSettings()">☁️ GitHub Sync Settings</button>
+        <button class="btn-sm btn-ghost" onclick="exportBackup()">📥 Backup JSON</button>
+        <button class="btn-sm btn-ghost" onclick="document.getElementById('restoreFile').click()">📤 Restore</button>
+        <input type="file" id="restoreFile" style="display:none" accept=".json" onchange="restoreBackup(event)">
+        <button class="btn-sm btn-danger" onclick="lockVault()">🔒 Lock</button>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="tabs-bar" id="categoryTabs"></div>
+
+    <!-- Filter & Search -->
+    <div class="search-row">
+      <input type="text" id="searchBox" class="search-box" placeholder="🔍 Instant search: Consumer No, BU, Person Name, Mobile, Policy..." oninput="renderGrid()">
+      <button class="btn-sm btn-ghost" onclick="syncWithGitHub()">🔄 Push/Pull GitHub</button>
+    </div>
+
+    <!-- Cards Output -->
+    <div class="grid" id="cardsGrid"></div>
+
+    <!-- Payment History / Kaunse se Pay Kiya Section -->
+    <div class="section-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h3 style="font-size:0.95rem;">📋 Paid Bills History (Audit Ledger)</h3>
+          <span style="font-size:0.75rem; color:var(--muted);" id="ledgerCount">0 Payments Logged</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-sm btn-ghost" onclick="exportLedgerCSV()">Export CSV</button>
+          <button class="btn-sm btn-ghost" style="color:var(--danger)" onclick="clearLedger()">Clear Log</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Person / Category</th>
+              <th>Consumer ID</th>
+              <th>Bill Amount</th>
+              <th>Paid Via (Method)</th>
+              <th>Remarks / Month</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 1: Log Payment -->
+<div class="modal-backdrop" id="payModal">
+  <div class="modal-box">
+    <h3 style="margin-bottom:12px; font-size:1rem;">💳 Record Bill Payment</h3>
+    <div class="form-row">
+      <label>Target Account / Customer</label>
+      <input type="text" id="payTarget" readonly style="opacity:0.85;">
+    </div>
+    <div class="form-row">
+      <label>Bill Amount (₹)</label>
+      <input type="number" id="payAmount" placeholder="e.g. 2350" step="any">
+    </div>
+    <div class="form-row">
+      <label>Paid Via (Payment Source)</label>
+      <select id="payMode">
+        <option value="Google Pay (UPI)">Google Pay (UPI)</option>
+        <option value="PhonePe (UPI)">PhonePe (UPI)</option>
+        <option value="Paytm (UPI)">Paytm (UPI)</option>
+        <option value="Direct NetBanking">Direct NetBanking</option>
+        <option value="Credit Card">Credit Card</option>
+        <option value="Debit Card">Debit Card</option>
+        <option value="Cash / Counter">Cash / Counter</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Transaction ID / Month / Notes</label>
+      <input type="text" id="payNotes" placeholder="e.g. Sept Bill / UTR 4827104">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button style="flex:1;" class="btn-accent" onclick="savePayment()">Save & Record</button>
+      <button class="btn-ghost" onclick="closePayModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2: Add Entry / New Category -->
+<div class="modal-backdrop" id="addModal">
+  <div class="modal-box">
+    <h3 style="margin-bottom:12px; font-size:1rem;">➕ Add New Account / Details</h3>
+    <div class="form-row">
+      <label>Category (Choose or Type New)</label>
+      <input type="text" id="addCategory" list="catList" placeholder="e.g. MSEB, BROADBAND, FASTAG...">
+      <datalist id="catList"></datalist>
+    </div>
+    <div class="form-row">
+      <label>Person / Entity Name</label>
+      <input type="text" id="addPerson" placeholder="e.g. RAMESH BHIYA / SHOP 1">
+    </div>
+    <div class="form-row">
+      <label>Consumer Number / ID / Policy</label>
+      <input type="text" id="addId" placeholder="e.g. 430010999999">
+    </div>
+    <div class="form-row">
+      <label>Account Holder / Official Name</label>
+      <input type="text" id="addName" placeholder="e.g. RAMESH CHANDRA...">
+    </div>
+    <div class="form-row">
+      <label>Extra Info (BU, STD, DOB, Mob)</label>
+      <input type="text" id="addExtra" placeholder="e.g. BU: 1937 or Mob: 98xxxx">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button style="flex:1;" class="btn-accent" onclick="saveNewEntry()">Add & Sync</button>
+      <button class="btn-ghost" onclick="closeAddModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 3: GitHub Direct Sync Config -->
+<div class="modal-backdrop" id="syncModal">
+  <div class="modal-box">
+    <h3 style="margin-bottom:10px; font-size:1rem;">☁️ GitHub Cloud Auto-Sync Config</h3>
+    <p style="color:var(--muted); font-size:0.78rem; margin-bottom:12px;">Allows two-way sync of data.json across mobile, laptop and desktop directly via your GitHub repo.</p>
+    <div class="form-row">
+      <label>GitHub Username</label>
+      <input type="text" id="ghUser" placeholder="e.g. shubhamagrawal">
+    </div>
+    <div class="form-row">
+      <label>Repository Name</label>
+      <input type="text" id="ghRepo" placeholder="e.g. online-payments-vault">
+    </div>
+    <div class="form-row">
+      <label>Personal Access Token (PAT with 'repo' scope)</label>
+      <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    </div>
+    <div class="form-row">
+      <label>Path to JSON</label>
+      <input type="text" id="ghPath" value="data.json">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button style="flex:1;" class="btn-accent" onclick="saveGitHubSettings()">Save & Connect</button>
+      <button class="btn-ghost" onclick="closeSyncModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to Clipboard!</div>
+
+<script>
+// STORAGE KEYS
+const STORAGE_KEY_DATA = "aio_payhub_data_v1";
+const STORAGE_KEY_LOGS = "aio_payhub_logs_v1";
+const STORAGE_KEY_GH = "aio_payhub_gh_v1";
+
+let masterStore = {
+  version: "1.0",
+  last_sync: new Date().toISOString().slice(0,10),
+  accounts: [],
+  payment_history: []
+};
+
+let activeTab = "ALL";
+let currentPayTarget = null;
+
+// Initialize
+async function unlockVault() {
+  const p1 = document.getElementById('p1').value.trim();
+  const p2 = document.getElementById('p2').value.trim();
+  const p3 = document.getElementById('p3').value.trim();
+
+  if(!p1 || !p2 || !p3) {
+    document.getElementById('authErr').innerText = "All 3 security password parts required.";
+    return;
+  }
+
+  // Load from LocalStorage if exists, or fetch local data.json
+  const localSaved = localStorage.getItem(STORAGE_KEY_DATA);
+  if (localSaved) {
+    masterStore = JSON.parse(localSaved);
+  } else {
+    try {
+      const resp = await fetch('data.json');
+      if (resp.ok) {
+        masterStore = await resp.json();
+        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+      }
+    } catch(e) {
+      console.log("data.json not loaded via fetch, starting with empty store", e);
+    }
+  }
+
+  // Load logs
+  const logsSaved = localStorage.getItem(STORAGE_KEY_LOGS);
+  if(logsSaved) {
+    masterStore.payment_history = JSON.parse(logsSaved);
+  }
+
+  sessionStorage.setItem('hub_auth', 'true');
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  
+  renderTabs();
+  renderGrid();
+  renderLedger();
+}
+
+function lockVault() {
+  sessionStorage.clear();
+  location.reload();
+}
+
+// Render Tabs
+function renderTabs() {
+  const cats = ['ALL', ...new Set(masterStore.accounts.map(a => a.category).filter(Boolean))];
+  const bar = document.getElementById('categoryTabs');
+  bar.innerHTML = cats.map(c => `
+    <button class="tab-btn ${c === activeTab ? 'active' : ''}" onclick="selectTab('${c}')">${c}</button>
+  `).join('');
+
+  // Update datalist for Add Modal
+  const datalist = document.getElementById('catList');
+  datalist.innerHTML = cats.filter(c => c !== 'ALL').map(c => `<option value="${c}">`).join('');
+}
+
+function selectTab(cat) {
+  activeTab = cat;
+  renderTabs();
+  renderGrid();
+}
+
+// Render Accounts
+function renderGrid() {
+  const query = document.getElementById('searchBox').value.toLowerCase();
+  const grid = document.getElementById('cardsGrid');
+
+  const filtered = masterStore.accounts.filter(item => {
+    const matchesTab = activeTab === 'ALL' || item.category === activeTab;
+    const matchesQuery = (item.id || "").toLowerCase().includes(query) ||
+                         (item.person || "").toLowerCase().includes(query) ||
+                         (item.name || "").toLowerCase().includes(query) ||
+                         (item.extra || "").toLowerCase().includes(query);
+    return matchesTab && matchesQuery;
+  });
+
+  if(!filtered.length) {
+    grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:30px; color:var(--muted);">No matching accounts found.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((item, idx) => `
+    <div class="card">
+      <div>
+        <div class="card-top">
+          <span class="person-badge">${escapeHtml(item.person)}</span>
+          <span class="cat-badge">${escapeHtml(item.category)}</span>
+        </div>
+        <div style="font-weight:600; font-size:0.92rem; margin-top:2px;">${escapeHtml(item.name || '-')}</div>
+        <div style="font-size:0.75rem; color:var(--muted); margin-bottom:6px;">${escapeHtml(item.extra || '')}</div>
+        
+        <div class="id-box">
+          <span class="id-val">${escapeHtml(item.id)}</span>
+          <button class="btn-sm btn-ghost" onclick="copyText('${escapeHtml(item.id)}')">📋 Copy</button>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:6px; margin-top:10px;">
+        <button style="flex:1;" class="btn-sm btn-accent" onclick="openPayModal('${escapeHtml(item.person)} (${escapeHtml(item.category)})', '${escapeHtml(item.id)}')">💳 Pay & Save Details</button>
+        <button class="btn-sm btn-ghost" style="color:var(--danger)" onclick="deleteEntry('${escapeHtml(item.id)}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Clipboard Copy
+function copyText(val) {
+  // Cleans leading non-digits if present for clean copy
+  const clean = val.replace(/^[^\d]+/, '') || val;
+  navigator.clipboard.writeText(clean);
+  showToast(`Copied: ${clean}`);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 1600);
+}
+
+// Payment Logging Modal
+function openPayModal(title, id) {
+  currentPayTarget = { title, id };
+  document.getElementById('payTarget').value = `${title} - [${id}]`;
+  document.getElementById('payAmount').value = '';
+  document.getElementById('payNotes').value = '';
+  document.getElementById('payModal').classList.add('open');
+}
+
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+}
+
+function savePayment() {
+  const amount = document.getElementById('payAmount').value.trim();
+  const mode = document.getElementById('payMode').value;
+  const notes = document.getElementById('payNotes').value.trim();
+
+  if(!amount || Number(amount) <= 0) {
+    alert("Please enter a valid bill amount!");
+    return;
+  }
+
+  const logEntry = {
+    timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+    target: currentPayTarget.title,
+    id: currentPayTarget.id,
+    amount: amount,
+    mode: mode,
+    notes: notes || '-'
+  };
+
+  masterStore.payment_history.unshift(logEntry);
+  localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(masterStore.payment_history));
+  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+
+  closePayModal();
+  renderLedger();
+  showToast("Payment Logged Successfully!");
+}
+
+function renderLedger() {
+  const logs = masterStore.payment_history || [];
+  document.getElementById('ledgerCount').innerText = `${logs.length} Logged`;
+  const body = document.getElementById('ledgerBody');
+  
+  if(!logs.length) {
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:16px;">No bills paid or recorded yet.</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = logs.map(l => `
+    <tr>
+      <td style="color:var(--muted); font-size:0.75rem;">${l.timestamp}</td>
+      <td><strong>${escapeHtml(l.target)}</strong></td>
+      <td style="font-family:monospace; color:var(--primary); font-weight:700;">${escapeHtml(l.id)}</td>
+      <td style="font-weight:700; color:var(--accent);">₹${l.amount}</td>
+      <td><span style="background:#09251e; color:#34d399; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${escapeHtml(l.mode)}</span></td>
+      <td style="color:var(--muted);">${escapeHtml(l.notes)}</td>
+    </tr>
+  `).join('');
+}
+
+function clearLedger() {
+  if(confirm("Clear all recorded payment logs?")) {
+    masterStore.payment_history = [];
+    localStorage.removeItem(STORAGE_KEY_LOGS);
+    localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+    renderLedger();
+  }
+}
+
+function exportLedgerCSV() {
+  const logs = masterStore.payment_history || [];
+  if(!logs.length) return alert("No payment history to export.");
+  let csv = "Date_Time,Account_Title,Consumer_ID,Amount_INR,Paid_Via,Remarks
+";
+  logs.forEach(l => {
+    csv += `"${l.timestamp}","${l.target}","${l.id}","${l.amount}","${l.mode}","${l.notes}"
+`;
+  });
+  downloadFile(csv, `Payment_Records_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
+}
+
+// Add New Entry
+function openAddModal() {
+  document.getElementById('addCategory').value = activeTab !== 'ALL' ? activeTab : '';
+  document.getElementById('addPerson').value = '';
+  document.getElementById('addId').value = '';
+  document.getElementById('addName').value = '';
+  document.getElementById('addExtra').value = '';
+  document.getElementById('addModal').classList.add('open');
+}
+
+function closeAddModal() {
+  document.getElementById('addModal').classList.remove('open');
+}
+
+function saveNewEntry() {
+  const cat = document.getElementById('addCategory').value.trim().toUpperCase();
+  const person = document.getElementById('addPerson').value.trim().toUpperCase();
+  const id = document.getElementById('addId').value.trim();
+  const name = document.getElementById('addName').value.trim().toUpperCase();
+  const extra = document.getElementById('addExtra').value.trim();
+
+  if(!cat || !person || !id) {
+    alert("Category, Person, and Consumer ID are required!");
+    return;
+  }
+
+  masterStore.accounts.unshift({
+    category: cat,
+    person: person,
+    id: id,
+    name: name,
+    extra: extra
+  });
+
+  localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+  closeAddModal();
+  renderTabs();
+  renderGrid();
+  showToast("New Account Added!");
+}
+
+function deleteEntry(id) {
+  if(confirm(`Delete consumer ID: ${id}?`)) {
+    masterStore.accounts = masterStore.accounts.filter(a => a.id !== id);
+    localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+    renderGrid();
+    renderTabs();
+    showToast("Deleted");
+  }
+}
+
+// Backup & Restore
+function exportBackup() {
+  const jsonStr = JSON.stringify(masterStore, null, 2);
+  downloadFile(jsonStr, `Online_Payments_Backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
+}
+
+function restoreBackup(evt) {
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if(parsed && parsed.accounts) {
+        masterStore = parsed;
+        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+        if(parsed.payment_history) {
+          localStorage.setItem(STORAGE_KEY_LOGS, JSON.stringify(parsed.payment_history));
+        }
+        renderTabs();
+        renderGrid();
+        renderLedger();
+        alert("Backup restored successfully!");
+      } else {
+        alert("Invalid JSON schema.");
+      }
+    } catch(err) {
+      alert("Error reading file: " + err);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// GitHub Cloud Sync (2-Way)
+function openSyncSettings() {
+  const gh = JSON.parse(localStorage.getItem(STORAGE_KEY_GH) || '{}');
+  document.getElementById('ghUser').value = gh.user || '';
+  document.getElementById('ghRepo').value = gh.repo || '';
+  document.getElementById('ghToken').value = gh.token || '';
+  document.getElementById('ghPath').value = gh.path || 'data.json';
+  document.getElementById('syncModal').classList.add('open');
+}
+
+function closeSyncModal() {
+  document.getElementById('syncModal').classList.remove('open');
+}
+
+function saveGitHubSettings() {
+  const gh = {
+    user: document.getElementById('ghUser').value.trim(),
+    repo: document.getElementById('ghRepo').value.trim(),
+    token: document.getElementById('ghToken').value.trim(),
+    path: document.getElementById('ghPath').value.trim() || 'data.json'
+  };
+  localStorage.setItem(STORAGE_KEY_GH, JSON.stringify(gh));
+  closeSyncModal();
+  syncWithGitHub();
+}
+
+async function syncWithGitHub() {
+  const gh = JSON.parse(localStorage.getItem(STORAGE_KEY_GH) || '{}');
+  if(!gh.user || !gh.repo || !gh.token) {
+    openSyncSettings();
+    return;
+  }
+
+  const statusEl = document.getElementById('syncStatus');
+  statusEl.innerHTML = `<span class="dot orange"></span> Syncing with GitHub...`;
+
+  const url = `https://api.github.com/repos/${gh.user}/${gh.repo}/contents/${gh.path}`;
+  try {
+    // 1. Fetch current remote file SHA and data
+    const getRes = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${gh.token}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    let sha = null;
+    if(getRes.ok) {
+      const fileData = await getRes.json();
+      sha = fileData.sha;
+      const remoteContent = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+      
+      // Merge remote accounts with local accounts
+      if(remoteContent && remoteContent.accounts) {
+        const idMap = new Map();
+        masterStore.accounts.forEach(a => idMap.set(a.id, a));
+        remoteContent.accounts.forEach(a => {
+          if(!idMap.has(a.id)) idMap.set(a.id, a);
+        });
+        masterStore.accounts = Array.from(idMap.values());
+      }
+    }
+
+    // 2. Commit updated JSON back to GitHub repo
+    masterStore.last_sync = new Date().toISOString().slice(0,10);
+    const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(masterStore, null, 2))));
+    
+    const putRes = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${gh.token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Sync updates via Secure PayHub [${new Date().toISOString().slice(0,16)}]`,
+        content: contentEncoded,
+        sha: sha || undefined
+      })
+    });
+
+    if(putRes.ok) {
+      localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(masterStore));
+      statusEl.innerHTML = `<span class="dot green"></span> Synced with GitHub (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
+      renderTabs();
+      renderGrid();
+      showToast("Cloud Synced to GitHub!");
+    } else {
+      const err = await putRes.json();
+      throw new Error(err.message || 'Commit failed');
+    }
+  } catch(err) {
+    statusEl.innerHTML = `<span class="dot" style="background:#ef4444"></span> Sync Error: ${err.message}`;
+    alert("GitHub Sync Error: " + err.message);
+  }
+}
+
+// Helpers
+function downloadFile(content, fileName, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+}
+
+function escapeHtml(str) {
+  if(!str) return '';
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
+}
+</script>
+</body>
+</html>

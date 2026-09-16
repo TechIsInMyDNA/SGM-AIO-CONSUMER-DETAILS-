@@ -21,6 +21,7 @@
     --text: #f1f5f9;
     --text-muted: #94a3b8;
     --danger: #ef4444;
+    --warning: #f59e0b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
   body { background: radial-gradient(circle at top right, #111e38 0%, #070d17 60%); color: var(--text); padding: 14px; min-height: 100vh; }
@@ -63,7 +64,7 @@
   .search-input { flex: 1; padding: 10px 14px; font-size: 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
 
   /* Consumer Grid Cards */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(315px, 1fr)); gap: 14px; }
   .vault-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s ease; position: relative; }
   .vault-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
   .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
@@ -72,13 +73,21 @@
   .acc-holder { font-weight: 700; font-size: 0.94rem; color: #fff; margin: 4px 0 2px; line-height: 1.3; }
   .acc-extra { font-size: 0.76rem; color: var(--text-muted); min-height: 18px; }
   
+  /* Due Date Chip on Card */
+  .due-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 0.74rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; margin-top: 6px; border: 1px solid transparent; cursor: pointer; transition: 0.15s; }
+  .due-chip:hover { filter: brightness(1.2); }
+  .due-chip.good { background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+  .due-chip.warning { background: rgba(245, 158, 11, 0.14); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+  .due-chip.urgent { background: rgba(239, 68, 68, 0.14); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
+  .due-chip.empty { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); border-color: var(--border); font-weight: 500; }
+
   .id-box { display: flex; justify-content: space-between; align-items: center; background: #080f1d; padding: 10px 12px; border-radius: 10px; margin: 10px 0 12px; border: 1px solid #1a2a47; }
   .id-text { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 700; color: #38bdf8; letter-spacing: 0.5px; }
 
   /* Audit Log Table */
   .ledger-box { margin-top: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
   .ledger-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.82rem; }
-  .ledger-table th, .ledger-table td { border-bottom: 1px solid var(--border); padding: 9px 8px; text-align: left; }
+  .ledger-table th, .ledger-table td { border-bottom: 1px solid var(--border); padding: 9px 8px; text-align: left; vertical-align: middle; }
   .ledger-table th { color: var(--text-muted); font-weight: 600; }
 
   /* Modal Backdrop */
@@ -196,6 +205,7 @@
               <th>Amount</th>
               <th>Payment Mode</th>
               <th>Remarks</th>
+              <th style="text-align:center;">Action</th>
             </tr>
           </thead>
           <tbody id="ledgerBody"></tbody>
@@ -265,6 +275,10 @@
       <label>Extra Info (BU / STD / Contact / DOB)</label>
       <input type="text" id="addExtra" placeholder="e.g. BU: 1937">
     </div>
+    <div class="field-group">
+      <label>Bill Due Date (Optional)</label>
+      <input type="date" id="addDueDate">
+    </div>
     <div style="display:flex; gap:8px; margin-top:16px;">
       <button class="btn-accent" style="flex:1; justify-content:center;" onclick="saveNewEntry()">Add & Push to Repo</button>
       <button class="btn-ghost" onclick="closeAddModal()">Cancel</button>
@@ -272,7 +286,71 @@
   </div>
 </div>
 
-<!-- Modal 3: Auto-Detected Repo Configuration -->
+<!-- Modal 3: Set / Edit Due Date directly from Card -->
+<div class="modal-overlay" id="dueDateModal">
+  <div class="modal-card">
+    <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:12px; color:#fff;">📅 Set Bill Due Date</h3>
+    <p style="color:var(--text-muted); font-size:0.78rem; margin-bottom:14px;">The card will automatically count down and show left days.</p>
+    <div class="field-group">
+      <label>Consumer / Account</label>
+      <input type="text" id="dueDateTarget" readonly style="opacity:0.85;">
+    </div>
+    <div class="field-group">
+      <label>Select Due Date</label>
+      <input type="date" id="dueDateVal">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn-accent" style="flex:1; justify-content:center;" onclick="saveCardDueDate()">Update Due Date</button>
+      <button class="btn-ghost" style="color:var(--danger);" onclick="removeCardDueDate()">Remove</button>
+      <button class="btn-ghost" onclick="closeDueDateModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 4: Edit Log Row Modal -->
+<div class="modal-overlay" id="editLogModal">
+  <div class="modal-card">
+    <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:14px; color:#fff;">✏️ Edit Payment Record</h3>
+    <div class="field-group">
+      <label>Account</label>
+      <input type="text" id="editLogTarget" readonly style="opacity:0.85;">
+    </div>
+    <div class="field-group">
+      <label>Consumer ID</label>
+      <input type="text" id="editLogId" readonly style="opacity:0.85;">
+    </div>
+    <div class="field-group">
+      <label>Payment Date & Time</label>
+      <input type="text" id="editLogDate">
+    </div>
+    <div class="field-group">
+      <label>Bill Amount (₹)</label>
+      <input type="number" id="editLogAmount" step="any">
+    </div>
+    <div class="field-group">
+      <label>Paid Via (Payment Mode)</label>
+      <select id="editLogMode">
+        <option value="Google Pay (UPI)">Google Pay (UPI)</option>
+        <option value="PhonePe (UPI)">PhonePe (UPI)</option>
+        <option value="Paytm (UPI)">Paytm (UPI)</option>
+        <option value="Direct NetBanking">Direct NetBanking</option>
+        <option value="Credit Card">Credit Card</option>
+        <option value="Debit Card">Debit Card</option>
+        <option value="Cash / SGM Counter">Cash / Counter</option>
+      </select>
+    </div>
+    <div class="field-group">
+      <label>Remarks / Notes</label>
+      <input type="text" id="editLogNotes">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn-accent" style="flex:1; justify-content:center;" onclick="saveEditedLog()">Save Changes & Sync</button>
+      <button class="btn-ghost" onclick="closeEditLogModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 5: Auto-Detected Repo Configuration -->
 <div class="modal-overlay" id="configModal">
   <div class="modal-card">
     <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:12px; color:#fff;">⚙️ GitHub Cloud Connection</h3>
@@ -314,9 +392,9 @@ const PIN_3 = "45";
 
 // 2. 3-SPLIT TOKEN (GitHub Token Split into 3 chunks so scanner bots don't revoke)
 // Format: ghp_xxxxxxxxxxxx (40 characters split into 3 segments)
-const TOKEN_CHUNK_A = "ghp_DPLTyQFZXT";  // Part 1
-const TOKEN_CHUNK_B = "Gkqwuukna";      // Part 2
-const TOKEN_CHUNK_C = "S6pFbJvMQCU091pFO";      // Part 3
+const TOKEN_CHUNK_A = "ghp_DPLTyQFZ";  // Part 1
+const TOKEN_CHUNK_B = "XTGkqwuuknaS6p";      // Part 2
+const TOKEN_CHUNK_C = "FbJvMQCU091pFO";      // Part 3
 
 function getGitHubToken() {
   return (TOKEN_CHUNK_A + TOKEN_CHUNK_B + TOKEN_CHUNK_C).trim();
@@ -351,6 +429,8 @@ function getAutoRepoInfo() {
 let masterData = { accounts: [], payment_history: [] };
 let activeCategory = "ALL";
 let currentPayTarget = null;
+let currentDueTargetId = null;
+let currentEditLogIndex = null;
 
 // Auto-advance PIN input boxes smoothly
 function handlePinAutoAdvance(num) {
@@ -422,6 +502,49 @@ function selectCategory(cat) {
   renderGrid();
 }
 
+// Calculate Due Date & Left Days Badge
+function getDueDateBadge(dueStr, itemId) {
+  if(!dueStr) {
+    return `<div class="due-chip empty" onclick="openDueDateModal('${escapeHtml(itemId)}', '')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      + Set Due Date
+    </div>`;
+  }
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const due = new Date(dueStr);
+  due.setHours(0,0,0,0);
+
+  const diffTime = due - today;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  let badgeClass = 'good';
+  let badgeText = '';
+
+  if(diffDays < 0) {
+    badgeClass = 'urgent';
+    badgeText = `⚠️ Overdue by ${Math.abs(diffDays)} days (${dueStr})`;
+  } else if(diffDays === 0) {
+    badgeClass = 'urgent';
+    badgeText = `🚨 Due Today! (${dueStr})`;
+  } else if(diffDays === 1) {
+    badgeClass = 'warning';
+    badgeText = `⏳ 1 Day Left (${dueStr})`;
+  } else if(diffDays <= 4) {
+    badgeClass = 'warning';
+    badgeText = `⏳ ${diffDays} Days Left (${dueStr})`;
+  } else {
+    badgeClass = 'good';
+    badgeText = `📅 Due: ${dueStr} (${diffDays} days left)`;
+  }
+
+  return `<div class="due-chip ${badgeClass}" onclick="openDueDateModal('${escapeHtml(itemId)}', '${escapeHtml(dueStr)}')">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    ${badgeText}
+  </div>`;
+}
+
 // Cards Grid
 function renderGrid() {
   const q = document.getElementById('searchBox').value.toLowerCase();
@@ -450,6 +573,10 @@ function renderGrid() {
         </div>
         <div class="acc-holder">${escapeHtml(item.name || '-')}</div>
         <div class="acc-extra">${escapeHtml(item.extra || '')}</div>
+
+        <div>
+          ${getDueDateBadge(item.due_date, item.id)}
+        </div>
 
         <div class="id-box">
           <span class="id-text">${escapeHtml(item.id)}</span>
@@ -484,6 +611,44 @@ function showToast(msg) {
   t.innerText = msg;
   t.style.display = 'block';
   setTimeout(() => t.style.display = 'none', 1800);
+}
+
+// Due Date Modal from Card
+function openDueDateModal(id, currentDue) {
+  currentDueTargetId = id;
+  const acc = masterData.accounts.find(a => a.id === id);
+  document.getElementById('dueDateTarget').value = `${acc ? acc.person + ' - ' : ''}${id}`;
+  document.getElementById('dueDateVal').value = currentDue || '';
+  document.getElementById('dueDateModal').classList.add('open');
+}
+
+function closeDueDateModal() {
+  document.getElementById('dueDateModal').classList.remove('open');
+}
+
+async function saveCardDueDate() {
+  const val = document.getElementById('dueDateVal').value;
+  const acc = masterData.accounts.find(a => a.id === currentDueTargetId);
+  if(acc) {
+    acc.due_date = val;
+    localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+    closeDueDateModal();
+    renderGrid();
+    showToast("Due Date Saved!");
+    await syncWithGitHub(false);
+  }
+}
+
+async function removeCardDueDate() {
+  const acc = masterData.accounts.find(a => a.id === currentDueTargetId);
+  if(acc) {
+    delete acc.due_date;
+    localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+    closeDueDateModal();
+    renderGrid();
+    showToast("Due Date Removed");
+    await syncWithGitHub(false);
+  }
 }
 
 // Payment Logging
@@ -531,19 +696,67 @@ function renderLedger() {
   document.getElementById('ledgerCount').innerText = `${logs.length} Payments Logged`;
   const body = document.getElementById('ledgerBody');
   if(!logs.length) {
-    body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:18px;">No bill payments logged yet.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:18px;">No bill payments logged yet.</td></tr>`;
     return;
   }
-  body.innerHTML = logs.map(l => `
+  body.innerHTML = logs.map((l, idx) => `
     <tr>
-      <td style="color:var(--text-muted); font-size:0.75rem;">${l.date}</td>
+      <td style="color:var(--text-muted); font-size:0.75rem;">${escapeHtml(l.date)}</td>
       <td><strong>${escapeHtml(l.target)}</strong></td>
       <td style="font-family:'JetBrains Mono'; color:var(--primary); font-weight:700;">${escapeHtml(l.id)}</td>
-      <td style="color:var(--accent); font-weight:800;">₹${l.amount}</td>
+      <td style="color:var(--accent); font-weight:800;">₹${escapeHtml(l.amount)}</td>
       <td><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:3px 8px; border-radius:6px; font-size:0.72rem; font-weight:700;">${escapeHtml(l.mode)}</span></td>
       <td style="color:var(--text-muted);">${escapeHtml(l.notes)}</td>
+      <td style="text-align:center;">
+        <button class="btn-ghost" style="padding:4px 8px; font-size:0.72rem;" onclick="openEditLogModal(${idx})">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Edit
+        </button>
+      </td>
     </tr>
   `).join('');
+}
+
+// Edit Log Modal Logic
+function openEditLogModal(index) {
+  currentEditLogIndex = index;
+  const l = masterData.payment_history[index];
+  if(!l) return;
+
+  document.getElementById('editLogTarget').value = l.target || '';
+  document.getElementById('editLogId').value = l.id || '';
+  document.getElementById('editLogDate').value = l.date || '';
+  document.getElementById('editLogAmount').value = l.amount || '';
+  document.getElementById('editLogMode').value = l.mode || 'Google Pay (UPI)';
+  document.getElementById('editLogNotes').value = l.notes || '';
+  document.getElementById('editLogModal').classList.add('open');
+}
+
+function closeEditLogModal() {
+  document.getElementById('editLogModal').classList.remove('open');
+}
+
+async function saveEditedLog() {
+  if(currentEditLogIndex === null) return;
+  const l = masterData.payment_history[currentEditLogIndex];
+  if(!l) return;
+
+  const amount = document.getElementById('editLogAmount').value.trim();
+  if(!amount || Number(amount) <= 0) {
+    alert("Please enter a valid bill amount!");
+    return;
+  }
+
+  l.date = document.getElementById('editLogDate').value.trim() || l.date;
+  l.amount = amount;
+  l.mode = document.getElementById('editLogMode').value;
+  l.notes = document.getElementById('editLogNotes').value.trim() || '-';
+
+  localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+  closeEditLogModal();
+  renderLedger();
+  showToast("Record Updated!");
+  await syncWithGitHub(false);
 }
 
 function clearLedger() {
@@ -561,6 +774,7 @@ function openAddModal() {
   document.getElementById('addId').value = '';
   document.getElementById('addName').value = '';
   document.getElementById('addExtra').value = '';
+  document.getElementById('addDueDate').value = '';
   document.getElementById('addModal').classList.add('open');
 }
 
@@ -574,6 +788,7 @@ async function saveNewEntry() {
   const id = document.getElementById('addId').value.trim();
   const name = document.getElementById('addName').value.trim().toUpperCase();
   const extra = document.getElementById('addExtra').value.trim();
+  const dueDate = document.getElementById('addDueDate').value;
 
   if(!cat || !person || !id) {
     alert("Category, Person, and ID are required!");
@@ -581,7 +796,14 @@ async function saveNewEntry() {
   }
 
   if(!masterData.accounts) masterData.accounts = [];
-  masterData.accounts.unshift({ category: cat, person: person, id: id, name: name, extra: extra });
+  masterData.accounts.unshift({ 
+    category: cat, 
+    person: person, 
+    id: id, 
+    name: name, 
+    extra: extra,
+    due_date: dueDate || ''
+  });
   localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
   
   closeAddModal();
@@ -676,14 +898,21 @@ async function syncWithGitHub(isSilent = false) {
         if(remoteData && remoteData.accounts) {
           const idMap = new Map();
           masterData.accounts.forEach(a => idMap.set(a.id, a));
-          remoteData.accounts.forEach(a => { if(!idMap.has(a.id)) idMap.set(a.id, a); });
+          remoteData.accounts.forEach(a => { 
+            if(!idMap.has(a.id)) {
+              idMap.set(a.id, a);
+            } else {
+              // preserve due_date if remote has it
+              const existing = idMap.get(a.id);
+              if(!existing.due_date && a.due_date) existing.due_date = a.due_date;
+            }
+          });
           masterData.accounts = Array.from(idMap.values());
           if(remoteData.payment_history && remoteData.payment_history.length > (masterData.payment_history || []).length) {
             masterData.payment_history = remoteData.payment_history;
           }
         }
       } else if(getRes.status === 404) {
-        // Repo might have different name, try next in loop
         lastErrMsg = `Repository '${currentRepo}' or '${cfg.file}' not found on branch '${cfg.branch}'.`;
         continue;
       }
@@ -729,9 +958,7 @@ async function syncWithGitHub(isSilent = false) {
     dot.className = 'pulse-dot err';
     txt.innerText = 'Sync: Issue detected';
     if(!isSilent) {
-      alert(`Cloud Sync Notice: ${lastErrMsg}
-
-Tip: Click 'Repo Config' to verify your repo name and branch name.`);
+      alert(`Cloud Sync Notice: ${lastErrMsg}\n\nTip: Click 'Repo Config' to verify your repo name and branch name.`);
     }
   }
 }

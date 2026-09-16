@@ -303,7 +303,9 @@
       "id": "978447141",
       "name": "SURESH AGRAWAL",
       "extra": "DOB: 26-Jun-1968",
-      "due_date": "2026-09-21"
+      "due_date": "2026-09-21",
+      "due_type": "recurring",
+      "due_recur": "quarterly"
     },
     {
       "category": "LIC",

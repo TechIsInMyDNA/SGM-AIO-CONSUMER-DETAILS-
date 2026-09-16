@@ -42,10 +42,7 @@
       "person": "ASHWIN UNCLE",
       "id": "430017341264",
       "extra": "BU: 1937",
-      "name": "ASWINKUMAR CHANDRAKANT CHITARKA AGRAWAL",
-      "due_date": "2026-09-15",
-      "due_type": "recurring",
-      "due_recur": "monthly"
+      "name": "ASWINKUMAR CHANDRAKANT CHITARKA AGRAWAL"
     },
     {
       "category": "MSEB",
@@ -185,20 +182,14 @@
       "person": "MYSELF",
       "id": "430010145699",
       "extra": "BU: 1937",
-      "name": "THE CHIEF OFFICER M C",
-      "due_date": "2026-09-17",
-      "due_type": "recurring",
-      "due_recur": "monthly"
+      "name": "THE CHIEF OFFICER M C"
     },
     {
       "category": "MSEB",
       "person": "MYSELF",
       "id": "430010243640",
       "extra": "BU: 1937",
-      "name": "SHRI MOTILAL B JAIN",
-      "due_date": "2026-08-28",
-      "due_type": "recurring",
-      "due_recur": "monthly"
+      "name": "SHRI MOTILAL B JAIN"
     },
     {
       "category": "MSEB",
@@ -310,10 +301,7 @@
       "person": "MYSELF",
       "id": "978447141",
       "name": "SURESH AGRAWAL",
-      "extra": "DOB: 26-Jun-1968",
-      "due_date": "2026-09-21",
-      "due_type": "recurring",
-      "due_recur": "quarterly"
+      "extra": "DOB: 26-Jun-1968"
     },
     {
       "category": "LIC",

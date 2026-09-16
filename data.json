@@ -195,7 +195,10 @@
       "person": "MYSELF",
       "id": "430010243640",
       "extra": "BU: 1937",
-      "name": "SHRI MOTILAL B JAIN"
+      "name": "SHRI MOTILAL B JAIN",
+      "due_date": "2026-08-28",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

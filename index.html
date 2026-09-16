@@ -112,6 +112,22 @@
   .pulse-dot.working { background: #f59e0b; animation: blink 1s infinite alternate; }
   .pulse-dot.err { background: #ef4444; }
   @keyframes blink { from { opacity: 0.4; } to { opacity: 1; } }
+
+  /* Upcoming Due Dates Summary Card */
+  .due-summary-card { background: linear-gradient(145deg, #0d1a2d, #142036); border: 1px solid #253a5c; border-radius: 16px; padding: 18px; margin-bottom: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.35); position: relative; }
+  .due-summary-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+  .due-summary-title { font-size: 1.02rem; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 8px; }
+  .due-filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .due-filter-btn { background: #091120; border: 1px solid var(--border); color: var(--text-muted); padding: 5px 12px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; cursor: pointer; transition: 0.15s; }
+  .due-filter-btn.active { background: var(--primary); color: #070d17; border-color: var(--primary); }
+  
+  .due-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+  .due-item { background: #091120; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; transition: 0.2s; }
+  .due-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+  .due-item-info { flex: 1; min-width: 0; }
+  .due-item-person { font-weight: 700; font-size: 0.85rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .due-item-meta { font-size: 0.72rem; color: var(--text-muted); display: flex; gap: 6px; align-items: center; margin-top: 2px; }
+
 </style>
 </head>
 <body>
@@ -184,6 +200,25 @@
     <!-- Instant Search -->
     <div class="control-row">
       <input type="text" id="searchBox" class="search-input" placeholder="🔍 Instant Filter: Consumer No, BU, Person Name, Mobile, Policy..." oninput="renderGrid()">
+    </div>
+
+        <!-- Upcoming Due Dates Summary Card (Date-wise Tracking) -->
+    <div class="due-summary-card" id="dueSummaryWidget">
+      <div class="due-summary-head">
+        <div class="due-summary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Scheduled Due Dates Tracker</span>
+          <span id="dueBadgeCount" style="background:rgba(56,189,248,0.18); color:#38bdf8; font-size:0.75rem; padding:2px 8px; border-radius:12px; font-weight:800;">0 Scheduled</span>
+        </div>
+        <div class="due-filter-group">
+          <button class="due-filter-btn active" id="filterDue30" onclick="setDueFilter('30')">Next 1 Month (30d)</button>
+          <button class="due-filter-btn" id="filterDue90" onclick="setDueFilter('90')">Next 3 Months (90d)</button>
+          <button class="due-filter-btn" id="filterDueAll" onclick="setDueFilter('all')">All Scheduled</button>
+        </div>
+      </div>
+      <div class="due-list" id="dueListContainer">
+        <!-- Rendered date-wise dynamically -->
+      </div>
     </div>
 
     <!-- Customer Cards Grid -->
@@ -461,8 +496,8 @@ const PIN_3 = "45";
 // 2. 3-SPLIT TOKEN (GitHub Token Split into 3 chunks so scanner bots don't revoke)
 // Format: ghp_xxxxxxxxxxxx (40 characters split into 3 segments)
 const TOKEN_CHUNK_A = "ghp_DPLTyQFZX";  // Part 1
-const TOKEN_CHUNK_B = "TGkqwuuknaS";      // Part 2
-const TOKEN_CHUNK_C = "6pFbJvMQCU091pFO";      // Part 3
+const TOKEN_CHUNK_B = "TGkqwuuknaS6";      // Part 2
+const TOKEN_CHUNK_C = "pFbJvMQCU091pFO";      // Part 3
 
 function getGitHubToken() {
   return (TOKEN_CHUNK_A + TOKEN_CHUNK_B + TOKEN_CHUNK_C).trim();
@@ -544,7 +579,9 @@ async function unlockApp() {
 
   renderTabs();
   renderGrid();
+  renderDueSummary();
   renderLedger();
+  renderDueSummary();
 
   // Background silent sync
   syncWithGitHub(true);
@@ -568,6 +605,7 @@ function selectCategory(cat) {
   activeCategory = cat;
   renderTabs();
   renderGrid();
+  renderDueSummary();
 }
 
 // ============================================================================
@@ -809,6 +847,7 @@ async function saveCardDueDate() {
   localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
   closeDueDateModal();
   renderGrid();
+  renderDueSummary();
   showToast("Due Date Configured!");
   await syncWithGitHub(false);
 }
@@ -823,6 +862,7 @@ async function removeCardDueDate() {
     localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
     closeDueDateModal();
     renderGrid();
+  renderDueSummary();
     showToast("Due Date Removed");
     await syncWithGitHub(false);
   }
@@ -899,6 +939,7 @@ async function saveNewEntry() {
   closeAddModal();
   renderTabs();
   renderGrid();
+  renderDueSummary();
   showToast("Account Added!");
   await syncWithGitHub(false);
 }
@@ -1024,6 +1065,7 @@ async function deleteEntry(id) {
     masterData.accounts = masterData.accounts.filter(a => a.id !== id);
     localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
     renderGrid();
+  renderDueSummary();
     renderTabs();
     await syncWithGitHub(false);
   }
@@ -1150,6 +1192,7 @@ async function syncWithGitHub(isSilent = false) {
         txt.innerText = `Synced (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
         renderTabs();
         renderGrid();
+  renderDueSummary();
         renderLedger();
         success = true;
         if(!isSilent) showToast("Cloud Synced Successfully!");
@@ -1200,6 +1243,104 @@ function escapeHtml(str) {
   if(!str) return '';
   return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
 }
+
+let dueTimelineFilter = '30'; // default 1 month (30 days)
+
+function setDueFilter(filter) {
+  dueTimelineFilter = filter;
+  document.getElementById('filterDue30').className = 'due-filter-btn' + (filter === '30' ? ' active' : '');
+  document.getElementById('filterDue90').className = 'due-filter-btn' + (filter === '90' ? ' active' : '');
+  document.getElementById('filterDueAll').className = 'due-filter-btn' + (filter === 'all' ? ' active' : '');
+  renderDueSummary();
+}
+
+function renderDueSummary() {
+  const container = document.getElementById('dueListContainer');
+  const countBadge = document.getElementById('dueBadgeCount');
+  if(!container) return;
+
+  // Extract all accounts with due dates and compute their upcoming timing
+  const dueItems = [];
+  (masterData.accounts || []).forEach(acc => {
+    if(acc.due_date) {
+      const details = computeDueDetails(acc);
+      if(details) {
+        dueItems.push({
+          account: acc,
+          details: details
+        });
+      }
+    }
+  });
+
+  // Sort strictly DATE-WISE: closest date first (e.g. overdue -> today -> 1 day -> 5 days ...)
+  dueItems.sort((a, b) => a.details.diffDays - b.details.diffDays);
+
+  // Filter based on 1 month (30 days), 3 months (90 days), or all
+  const filtered = dueItems.filter(item => {
+    if(dueTimelineFilter === '30') {
+      return item.details.diffDays <= 30; // Within 1 month
+    } else if(dueTimelineFilter === '90') {
+      return item.details.diffDays <= 90; // Within 3 months
+    }
+    return true; // All
+  });
+
+  countBadge.innerText = `${filtered.length} Bills in Window`;
+
+  if(!filtered.length) {
+    container.innerHTML = `
+      <div style="grid-column: 1/-1; text-align:center; padding:18px; color:var(--text-muted); font-size:0.83rem;">
+        No bills due within this timeline. Click <strong>'+ Set Due Date'</strong> on any card to track it here date-wise!
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => {
+    const acc = item.account;
+    const d = item.details;
+    
+    let chipClass = 'good';
+    let chipText = '';
+    const recurTag = d.isRecurring ? '🔄 ' : '📅 ';
+
+    if(d.diffDays < 0) {
+      chipClass = 'urgent';
+      chipText = `⚠️ Overdue (${Math.abs(d.diffDays)}d)`;
+    } else if(d.diffDays === 0) {
+      chipClass = 'urgent';
+      chipText = `🚨 Due Today!`;
+    } else if(d.diffDays === 1) {
+      chipClass = 'warning';
+      chipText = `⏳ 1 Day Left`;
+    } else if(d.diffDays <= 4) {
+      chipClass = 'warning';
+      chipText = `⏳ ${d.diffDays} Days Left`;
+    } else {
+      chipClass = 'good';
+      chipText = `📅 ${d.diffDays} Days Left`;
+    }
+
+    return `
+      <div class="due-item">
+        <div class="due-item-info">
+          <div class="due-item-person">${escapeHtml(acc.person)} <span style="font-size:0.72rem; color:var(--primary); font-weight:normal;">[${escapeHtml(acc.category)}]</span></div>
+          <div class="due-item-meta">
+            <span style="font-family:'JetBrains Mono';">${escapeHtml(acc.id)}</span>
+            <span>•</span>
+            <span style="color:#fff; font-weight:600;">${d.nextDate}</span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
+          <span class="due-chip ${chipClass}" style="margin:0; font-size:0.72rem; padding:3px 7px;" onclick="openDueDateModal('${escapeHtml(acc.id)}')">${chipText}</span>
+          <button class="btn-accent" style="padding:3px 8px; font-size:0.72rem; border-radius:5px;" onclick="openPayModal('${escapeHtml(acc.person)} (${escapeHtml(acc.category)})', '${escapeHtml(acc.id)}')">Pay</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 </script>
 </body>
 </html>

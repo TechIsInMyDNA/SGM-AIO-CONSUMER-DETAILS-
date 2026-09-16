@@ -185,7 +185,10 @@
       "person": "MYSELF",
       "id": "430010145699",
       "extra": "BU: 1937",
-      "name": "THE CHIEF OFFICER M C"
+      "name": "THE CHIEF OFFICER M C",
+      "due_date": "2026-09-17",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

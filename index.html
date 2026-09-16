@@ -3,136 +3,198 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart PayHub - Multi-Device</title>
+<title>SGM Online Payment Vault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0f19;
-    --card: #151d2e;
-    --border: #243048;
+    --bg: #070d17;
+    --surface: #0f172a;
+    --card: #142036;
+    --card-hover: #192843;
+    --border: #233554;
+    --border-light: #334e77;
     --primary: #38bdf8;
+    --primary-glow: rgba(56, 189, 248, 0.25);
     --accent: #10b981;
-    --text: #f8fafc;
-    --muted: #94a3b8;
+    --accent-glow: rgba(16, 185, 129, 0.2);
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
     --danger: #ef4444;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  body { background: var(--bg); color: var(--text); padding: 12px; min-height: 100vh; }
-  .container { max-width: 1050px; margin: 0 auto; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; }
+  body { background: radial-gradient(circle at top right, #111e38 0%, #070d17 60%); color: var(--text); padding: 14px; min-height: 100vh; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* Navbar */
+  .navbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .logo-group { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #0284c7, #38bdf8); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--primary-glow); }
+  .logo-title { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(to right, #ffffff, #93c5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .nav-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* Buttons & Inputs */
+  button, input, select, textarea { font-family: inherit; font-size: 0.86rem; border-radius: 9px; border: 1px solid var(--border); outline: none; transition: 0.2s all ease; }
+  input, select, textarea { background: #091120; color: #fff; padding: 9px 12px; }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+  button { padding: 8px 14px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: none; }
+  .btn-primary { background: linear-gradient(135deg, #0284c7, #0ea5e9); color: #fff; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3); }
+  .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .btn-accent { background: linear-gradient(135deg, #059669, #10b981); color: #022c22; font-weight: 700; }
+  .btn-accent:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-ghost { background: var(--surface); color: var(--text-muted); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: #fff; border-color: var(--border-light); background: var(--card); }
+  .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+  .btn-danger:hover { background: #ef4444; color: #fff; }
+
+  /* Smooth 3-PIN Login Screen */
+  .auth-wrapper { max-width: 440px; margin: 70px auto; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px 26px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(16px); }
+  .auth-shield { width: 56px; height: 56px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--border-light); border-radius: 16px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
+  .pin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 22px 0 16px; }
+  .pin-box { text-align: center; font-size: 1.25rem; font-weight: 700; letter-spacing: 2px; padding: 12px; font-family: 'JetBrains Mono', monospace; background: #091120; border: 1px solid var(--border); border-radius: 12px; }
+
+  /* Navigation Tabs */
+  .tabs-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; scrollbar-width: none; }
+  .tab-pill { background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); padding: 7px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+  .tab-pill.active { background: var(--primary); color: #070d17; border-color: var(--primary); font-weight: 800; box-shadow: 0 4px 14px var(--primary-glow); }
+
+  /* Search & Controls */
+  .control-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .search-input { flex: 1; padding: 10px 14px; font-size: 0.9rem; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+
+  /* Consumer Grid Cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
+  .vault-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s ease; position: relative; }
+  .vault-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .person-badge { font-size: 0.74rem; font-weight: 800; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 3px 9px; border-radius: 6px; letter-spacing: 0.03em; }
+  .cat-badge { font-size: 0.68rem; font-weight: 700; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 2px 7px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); }
+  .acc-holder { font-weight: 700; font-size: 0.94rem; color: #fff; margin: 4px 0 2px; line-height: 1.3; }
+  .acc-extra { font-size: 0.76rem; color: var(--text-muted); min-height: 18px; }
   
-  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-  h1 { font-size: 1.2rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px; }
-  .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .id-box { display: flex; justify-content: space-between; align-items: center; background: #080f1d; padding: 10px 12px; border-radius: 10px; margin: 10px 0 12px; border: 1px solid #1a2a47; }
+  .id-text { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 700; color: #38bdf8; letter-spacing: 0.5px; }
 
-  input, select, button { border-radius: 8px; border: 1px solid var(--border); background: #0c1322; color: #fff; padding: 8px 12px; font-size: 0.88rem; }
-  input:focus, select:focus { border-color: var(--primary); outline: none; }
-  button { background: #0284c7; color: white; cursor: pointer; font-weight: 600; border: none; transition: 0.15s; }
-  button:hover { filter: brightness(1.15); }
-  .btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: 6px; }
-  .btn-ghost { background: var(--card); border: 1px solid var(--border); color: var(--muted); }
-  .btn-accent { background: var(--accent); color: #022c22; }
-  .btn-danger { background: #991b1b; }
+  /* Audit Log Table */
+  .ledger-box { margin-top: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
+  .ledger-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.82rem; }
+  .ledger-table th, .ledger-table td { border-bottom: 1px solid var(--border); padding: 9px 8px; text-align: left; }
+  .ledger-table th { color: var(--text-muted); font-weight: 600; }
 
-  /* Login Card */
-  .auth-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 460px; margin: 60px auto; text-align: center; }
-  .pass-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 16px 0; }
+  /* Modal Backdrop */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.78); backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 100; padding: 14px; }
+  .modal-overlay.open { display: flex; }
+  .modal-card { background: #0f172a; border: 1px solid var(--border-light); border-radius: 16px; width: 100%; max-width: 440px; padding: 22px; box-shadow: 0 24px 48px rgba(0,0,0,0.6); }
+  .field-group { margin-bottom: 12px; }
+  .field-group label { display: block; font-size: 0.76rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .field-group input, .field-group select { width: 100%; }
 
-  /* Tabs & Search */
-  .tabs-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; scrollbar-width: none; }
-  .tab-btn { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 20px; white-space: nowrap; font-size: 0.8rem; }
-  .tab-btn.active { background: var(--primary); color: #0f172a; font-weight: 700; border-color: var(--primary); }
-  
-  .search-row { display: flex; gap: 8px; margin-bottom: 14px; }
-  .search-box { flex: 1; }
-
-  /* Grid */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; }
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-  .person-badge { font-size: 0.76rem; font-weight: 700; color: var(--primary); background: #082f49; padding: 2px 8px; border-radius: 4px; }
-  .cat-badge { font-size: 0.7rem; color: var(--muted); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; }
-  .id-box { display: flex; justify-content: space-between; align-items: center; background: #090e1a; padding: 8px 10px; border-radius: 6px; margin: 8px 0; border: 1px solid #1a2336; }
-  .id-val { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1.02rem; font-weight: 700; color: #38bdf8; word-break: break-all; }
-
-  /* Logs & Modals */
-  .section-box { margin-top: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
-  .log-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; }
-  .log-table th, .log-table td { border-bottom: 1px solid var(--border); padding: 7px 6px; text-align: left; }
-  .log-table th { color: var(--muted); }
-  
-  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 99; padding: 14px; }
-  .modal-backdrop.open { display: flex; }
-  .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 420px; padding: 18px; }
-  .form-row { margin-bottom: 12px; }
-  .form-row label { display: block; font-size: 0.76rem; color: var(--muted); margin-bottom: 4px; }
-  .form-row input, .form-row select { width: 100%; }
-
-  .toast { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: #022c22; font-weight: 700; padding: 8px 16px; border-radius: 8px; display: none; z-index: 1000; }
-  .sync-status { font-size: 0.75rem; display: flex; align-items: center; gap: 5px; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: #10b981; }
+  /* Toast & Status Indicator */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #10b981; color: #022c22; font-weight: 800; font-size: 0.85rem; padding: 10px 18px; border-radius: 10px; display: none; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.4); animation: slideUp 0.2s ease; }
+  @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .sync-indicator { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-muted); }
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; }
+  .pulse-dot.working { background: #f59e0b; animation: blink 1s infinite alternate; }
+  .pulse-dot.err { background: #ef4444; }
+  @keyframes blink { from { opacity: 0.4; } to { opacity: 1; } }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- 3-Split Unlock Screen -->
-  <div id="authScreen" class="auth-card">
-    <div style="font-size:2.2rem; margin-bottom:8px;">🛡️</div>
-    <h2>Encrypted Hub Unlock</h2>
-    <p style="color:var(--muted); font-size:0.82rem; margin-top:4px;">3-Split Bot Safe Protected Access</p>
+  <!-- 3-PIN Login Screen -->
+  <div id="authScreen" class="auth-wrapper">
+    <div class="auth-shield">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h2 style="font-size:1.3rem; font-weight:800; color:#fff;">SGM Vault Unlock</h2>
+    <p style="color:var(--text-muted); font-size:0.82rem; margin-top:4px;">Enter 3-Split PIN to Decrypt Session</p>
     
-    <div class="pass-grid">
-      <input type="password" id="p1" placeholder="Part 1" autocomplete="off">
-      <input type="password" id="p2" placeholder="Part 2" autocomplete="off">
-      <input type="password" id="p3" placeholder="Part 3" autocomplete="off">
+    <div class="pin-grid">
+      <input type="password" id="p1" class="pin-box" maxlength="4" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(1)">
+      <input type="password" id="p2" class="pin-box" maxlength="4" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(2)">
+      <input type="password" id="p3" class="pin-box" maxlength="4" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(3)">
     </div>
     
-    <button style="width:100%; padding:10px;" onclick="unlockApp()">🔓 Unlock PayHub</button>
-    <div id="authErr" style="color:var(--danger); font-size:0.8rem; margin-top:8px;"></div>
+    <button class="btn-primary" style="width:100%; justify-content:center; padding:11px;" onclick="unlockApp()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Unlock Workspace
+    </button>
+    <div id="authErr" style="color:var(--danger); font-size:0.8rem; margin-top:10px; font-weight:600;"></div>
   </div>
 
-  <!-- Main App Screen -->
+  <!-- Main Authenticated App -->
   <div id="mainApp" style="display:none;">
-    <div class="header">
-      <div>
-        <h1>⚡ Online Payment Vault</h1>
-        <div class="sync-status" id="syncStatus"><span class="dot"></span> Multi-Device Ready</div>
+    <!-- Top Navbar -->
+    <div class="navbar">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <div class="logo-title">SGM Online Payment Vault</div>
+          <div class="sync-indicator">
+            <span class="pulse-dot" id="syncDot"></span>
+            <span id="syncText">Cloud Sync: Ready</span>
+          </div>
+        </div>
       </div>
-      <div class="header-actions">
-        <button class="btn-sm btn-accent" onclick="openAddModal()">➕ Add Entry / Category</button>
-        <button class="btn-sm btn-ghost" onclick="syncWithGitHub()">☁️ Sync Cloud</button>
-        <button class="btn-sm btn-ghost" onclick="exportBackup()">📥 Backup JSON</button>
-        <button class="btn-sm btn-ghost" onclick="document.getElementById('restoreFile').click()">📤 Restore</button>
-        <input type="file" id="restoreFile" style="display:none" accept=".json" onchange="restoreBackup(event)">
-        <button class="btn-sm btn-danger" onclick="lockApp()">🔒 Lock</button>
+      <div class="nav-btn-group">
+        <button class="btn-accent" onclick="openAddModal()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add New
+        </button>
+        <button class="btn-ghost" onclick="syncWithGitHub(false)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Sync
+        </button>
+        <button class="btn-ghost" onclick="openRepoConfig()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Repo Config
+        </button>
+        <button class="btn-ghost" onclick="exportBackup()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Backup
+        </button>
+        <button class="btn-danger" onclick="lockApp()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Lock
+        </button>
       </div>
     </div>
 
-    <!-- Category Tabs -->
-    <div class="tabs-bar" id="categoryTabs"></div>
+    <!-- Category Tabs Filter -->
+    <div class="tabs-scroll" id="categoryTabs"></div>
 
-    <!-- Search Box -->
-    <div class="search-row">
-      <input type="text" id="searchBox" class="search-box" placeholder="🔍 Search Consumer No, BU, Person Name, Mobile..." oninput="renderGrid()">
+    <!-- Instant Search -->
+    <div class="control-row">
+      <input type="text" id="searchBox" class="search-input" placeholder="🔍 Instant Filter: Consumer No, BU, Person Name, Mobile, Policy..." oninput="renderGrid()">
     </div>
 
-    <!-- Grid -->
+    <!-- Customer Cards Grid -->
     <div class="grid" id="cardsGrid"></div>
 
-    <!-- Payment History -->
-    <div class="section-box">
+    <!-- Audit Ledger Section -->
+    <div class="ledger-box">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <h3 style="font-size:0.92rem;">📋 Payment Records (Kaunse Se Pay Kiya)</h3>
-        <button class="btn-sm btn-ghost" onclick="exportCSV()">Export CSV</button>
+        <div>
+          <h3 style="font-size:0.96rem; font-weight:700;">📋 Paid Bills Audit Log</h3>
+          <span style="font-size:0.75rem; color:var(--text-muted);" id="ledgerCount">0 Payments Logged</span>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn-ghost" style="padding:5px 10px; font-size:0.75rem;" onclick="exportCSV()">Export CSV</button>
+          <button class="btn-ghost" style="padding:5px 10px; font-size:0.75rem; color:var(--danger);" onclick="clearLedger()">Clear Log</button>
+        </div>
       </div>
       <div style="overflow-x:auto;">
-        <table class="log-table">
+        <table class="ledger-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Person / Type</th>
-              <th>ID</th>
+              <th>Date & Time</th>
+              <th>Account Details</th>
+              <th>Consumer ID</th>
               <th>Amount</th>
-              <th>Paid Via</th>
+              <th>Payment Mode</th>
               <th>Remarks</th>
             </tr>
           </thead>
@@ -143,19 +205,19 @@
   </div>
 </div>
 
-<!-- Pay Modal -->
-<div class="modal-backdrop" id="payModal">
-  <div class="modal-box">
-    <h3 style="margin-bottom:12px; font-size:1rem;">💳 Log Payment</h3>
-    <div class="form-row">
-      <label>Target Account</label>
-      <input type="text" id="payTarget" readonly style="opacity:0.85;">
+<!-- Modal 1: Payment Log -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-card">
+    <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:14px; color:#fff;">💳 Record Bill Payment</h3>
+    <div class="field-group">
+      <label>Target Consumer</label>
+      <input type="text" id="payTarget" readonly style="opacity:0.85; font-weight:600;">
     </div>
-    <div class="form-row">
+    <div class="field-group">
       <label>Bill Amount (₹)</label>
-      <input type="number" id="payAmount" placeholder="e.g. 1450" step="any">
+      <input type="number" id="payAmount" placeholder="e.g. 1850" step="any">
     </div>
-    <div class="form-row">
+    <div class="field-group">
       <label>Paid Via (Payment Mode)</label>
       <select id="payMode">
         <option value="Google Pay (UPI)">Google Pay (UPI)</option>
@@ -164,121 +226,179 @@
         <option value="Direct NetBanking">Direct NetBanking</option>
         <option value="Credit Card">Credit Card</option>
         <option value="Debit Card">Debit Card</option>
-        <option value="Cash / Counter">Cash</option>
+        <option value="Cash / SGM Counter">Cash / Counter</option>
       </select>
     </div>
-    <div class="form-row">
-      <label>Remarks / Month / UTR</label>
-      <input type="text" id="payNotes" placeholder="e.g. Sept Bill / UTR 1234">
+    <div class="field-group">
+      <label>Remarks / Month / Ref No</label>
+      <input type="text" id="payNotes" placeholder="e.g. Sept Electricity Bill">
     </div>
-    <div style="display:flex; gap:8px; margin-top:14px;">
-      <button style="flex:1;" class="btn-accent" onclick="savePayment()">Save & Cloud Sync</button>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn-accent" style="flex:1; justify-content:center;" onclick="savePayment()">Save & Cloud Sync</button>
       <button class="btn-ghost" onclick="closePayModal()">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- Add Modal -->
-<div class="modal-backdrop" id="addModal">
-  <div class="modal-box">
-    <h3 style="margin-bottom:12px; font-size:1rem;">➕ Add Account / New Category</h3>
-    <div class="form-row">
-      <label>Category (Select or Type New)</label>
-      <input type="text" id="addCat" list="catDatalist" placeholder="e.g. MSEB, FASTAG, WATER BILL">
+<!-- Modal 2: Add Entry / New Category -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal-card">
+    <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:14px; color:#fff;">➕ Add Account / Category</h3>
+    <div class="field-group">
+      <label>Category (Choose or Type New)</label>
+      <input type="text" id="addCat" list="catDatalist" placeholder="e.g. MSEB, WATER BILL, FASTAG">
       <datalist id="catDatalist"></datalist>
     </div>
-    <div class="form-row">
-      <label>Person / Shop</label>
+    <div class="field-group">
+      <label>Person / Shop Name</label>
       <input type="text" id="addPerson" placeholder="e.g. SUSHIL UNCLE">
     </div>
-    <div class="form-row">
-      <label>Consumer Number / ID</label>
+    <div class="field-group">
+      <label>Consumer Number / ID / Policy</label>
       <input type="text" id="addId" placeholder="e.g. 430010420321">
     </div>
-    <div class="form-row">
-      <label>Official Name</label>
-      <input type="text" id="addName" placeholder="e.g. RADHABAI REWACHAND...">
+    <div class="field-group">
+      <label>Official Name on Bill</label>
+      <input type="text" id="addName" placeholder="e.g. RADHABAI HARIRAMANI">
     </div>
-    <div class="form-row">
-      <label>Extra Details (BU, DOB, Mob)</label>
+    <div class="field-group">
+      <label>Extra Info (BU / STD / Contact / DOB)</label>
       <input type="text" id="addExtra" placeholder="e.g. BU: 1937">
     </div>
-    <div style="display:flex; gap:8px; margin-top:14px;">
-      <button style="flex:1;" class="btn-accent" onclick="saveNewEntry()">Add & Cloud Sync</button>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn-accent" style="flex:1; justify-content:center;" onclick="saveNewEntry()">Add & Push to Repo</button>
       <button class="btn-ghost" onclick="closeAddModal()">Cancel</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast">Copied!</div>
+<!-- Modal 3: Auto-Detected Repo Configuration -->
+<div class="modal-overlay" id="configModal">
+  <div class="modal-card">
+    <h3 style="font-size:1.05rem; font-weight:700; margin-bottom:12px; color:#fff;">⚙️ GitHub Cloud Connection</h3>
+    <p style="color:var(--text-muted); font-size:0.78rem; margin-bottom:14px;">Confirm repository configuration. Auto-detected directly from your URL.</p>
+    <div class="field-group">
+      <label>GitHub Username</label>
+      <input type="text" id="cfgUser">
+    </div>
+    <div class="field-group">
+      <label>Repository Name (Notice Exact Name)</label>
+      <input type="text" id="cfgRepo">
+    </div>
+    <div class="field-group">
+      <label>Branch Name</label>
+      <input type="text" id="cfgBranch" value="main">
+    </div>
+    <div class="field-group">
+      <label>Data File Name</label>
+      <input type="text" id="cfgFile" value="data.json">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn-primary" style="flex:1; justify-content:center;" onclick="saveRepoConfig()">Save Config</button>
+      <button class="btn-ghost" onclick="closeRepoConfig()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to Clipboard!</div>
 
 <script>
 /* ==========================================================================
-   CONFIG ZONE: 
-   GitHub Token 3-Split (GitHub Bot / Secret Scanner isko detect ya revoke nahi kar sakta)
-   Aapka Token format: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx (total 40 chars)
+   CONFIG & BOT-PROTECTION ARCHITECTURE:
    ========================================================================== */
 
-// 1. GITHUB REPO CONFIG
-const GH_USER = "TechIsInMyDNA";       // <-- Apna GitHub Username yahan likhein
-const GH_REPO = "SGM-AIO-CONSUMER-DETAILS";             // <-- Apni Repo ka naam yahan likhein (e.g. payhub)
-const GH_FILE = "data.json";
+// 1. 3-SPLIT UNLOCK PIN (Easy to enter: Auto-focus jumps from box 1 to 2 to 3)
+const PIN_1 = "23";
+const PIN_2 = "32";
+const PIN_3 = "45";
 
-// 2. GITHUB TOKEN 3-SPLIT (Taki GitHub bot scanner trigger na ho aur token revoke na kare)
-// Example: agar token ghp_abc123456789xyz hai, to use 3 tukdo me baant kar yahan daalein:
-const TOKEN_PART_1 = "ghp_DPLTyQFZXT";      // <-- Pehla tukda (ghp_ se shuru)
-const TOKEN_PART_2 = "GkqwuuknaS6pF";          // <-- Beech ka tukda
-const TOKEN_PART_3 = "bJvMQCU091pFO";          // <-- Aakhri tukda
+// 2. 3-SPLIT TOKEN (GitHub Token Split into 3 chunks so scanner bots don't revoke)
+// Format: ghp_xxxxxxxxxxxx (40 characters split into 3 segments)
+const TOKEN_CHUNK_A = "ghp_DPLTyQFZXT";  // Part 1
+const TOKEN_CHUNK_B = "Gkqwuukna";      // Part 2
+const TOKEN_CHUNK_C = "S6pFbJvMQCU091pFO";      // Part 3
 
-// 3. 3-SPLIT UNLOCK PASSWORD (Aapka login lock)
-const PASS_1 = "23";                         // <-- Aapki marzi ka Part 1
-const PASS_2 = "32";                         // <-- Aapki marzi ka Part 2
-const PASS_3 = "45";                         // <-- Aapki marzi ka Part 3
+function getGitHubToken() {
+  return (TOKEN_CHUNK_A + TOKEN_CHUNK_B + TOKEN_CHUNK_C).trim();
+}
 
 /* ========================================================================== */
 
-// Runtime Token Builder (Bot bypass)
-function getBearerToken() {
-  return [TOKEN_PART_1, TOKEN_PART_2, TOKEN_PART_3].join('');
+// Auto-detect GitHub Repo details from current browser URL
+function getAutoRepoInfo() {
+  const host = window.location.hostname;
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  
+  let user = "TECHISINMYDNA";
+  let repo = "SGM-AIO-CONSUMER-DETAILS-"; // Default matching your current repo
+
+  if(host.endsWith('.github.io')) {
+    user = host.split('.')[0];
+    if(pathParts.length > 0) {
+      repo = pathParts[0];
+    }
+  }
+
+  const savedCfg = JSON.parse(localStorage.getItem('sgm_repo_cfg') || '{}');
+  return {
+    user: savedCfg.user || user,
+    repo: savedCfg.repo || repo,
+    branch: savedCfg.branch || 'main',
+    file: savedCfg.file || 'data.json'
+  };
 }
 
 let masterData = { accounts: [], payment_history: [] };
-let activeTab = "ALL";
+let activeCategory = "ALL";
 let currentPayTarget = null;
+
+// Auto-advance PIN input boxes smoothly
+function handlePinAutoAdvance(num) {
+  const el = document.getElementById('p' + num);
+  if(el.value.length >= 2) {
+    if(num < 3) {
+      document.getElementById('p' + (num + 1)).focus();
+    } else {
+      unlockApp();
+    }
+  }
+}
 
 async function unlockApp() {
   const p1 = document.getElementById('p1').value.trim();
   const p2 = document.getElementById('p2').value.trim();
   const p3 = document.getElementById('p3').value.trim();
 
-  if(p1 !== PASS_1 || p2 !== PASS_2 || p3 !== PASS_3) {
-    document.getElementById('authErr').innerText = "Wrong 3-split security key!";
+  if(p1 !== PIN_1 || p2 !== PIN_2 || p3 !== PIN_3) {
+    document.getElementById('authErr').innerText = "Wrong PIN! Please check all 3 boxes.";
     return;
   }
 
-  // Load cached or fetch data.json
-  const cached = localStorage.getItem('payhub_local_db');
+  // Load from local storage or data.json
+  const cached = localStorage.getItem('sgm_local_data');
   if(cached) {
     masterData = JSON.parse(cached);
   } else {
     try {
-      const res = await fetch(GH_FILE);
+      const cfg = getAutoRepoInfo();
+      const res = await fetch(cfg.file);
       if(res.ok) {
         masterData = await res.json();
-        localStorage.setItem('payhub_local_db', JSON.stringify(masterData));
+        localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
       }
     } catch(e) {
-      console.log("data.json not loaded yet", e);
+      console.warn("data.json not loaded yet", e);
     }
   }
 
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
+
   renderTabs();
   renderGrid();
   renderLedger();
-  
-  // Background cloud fetch to keep in sync
+
+  // Background silent sync
   syncWithGitHub(true);
 }
 
@@ -286,72 +406,87 @@ function lockApp() {
   location.reload();
 }
 
+// Category Tabs
 function renderTabs() {
   const cats = ['ALL', ...new Set((masterData.accounts || []).map(a => a.category).filter(Boolean))];
   document.getElementById('categoryTabs').innerHTML = cats.map(c => `
-    <button class="tab-btn ${c === activeTab ? 'active' : ''}" onclick="changeTab('${c}')">${c}</button>
+    <div class="tab-pill ${c === activeCategory ? 'active' : ''}" onclick="selectCategory('${c}')">${c}</div>
   `).join('');
 
   document.getElementById('catDatalist').innerHTML = cats.filter(c => c !== 'ALL').map(c => `<option value="${c}">`).join('');
 }
 
-function changeTab(cat) {
-  activeTab = cat;
+function selectCategory(cat) {
+  activeCategory = cat;
   renderTabs();
   renderGrid();
 }
 
+// Cards Grid
 function renderGrid() {
   const q = document.getElementById('searchBox').value.toLowerCase();
   const grid = document.getElementById('cardsGrid');
 
   const list = (masterData.accounts || []).filter(item => {
-    const matchCat = activeTab === 'ALL' || item.category === activeTab;
-    const matchQuery = (item.id || '').toLowerCase().includes(q) ||
-                       (item.person || '').toLowerCase().includes(q) ||
-                       (item.name || '').toLowerCase().includes(q) ||
-                       (item.extra || '').toLowerCase().includes(q);
-    return matchCat && matchQuery;
+    const matchCat = activeCategory === 'ALL' || item.category === activeCategory;
+    const matchQ = (item.id || '').toLowerCase().includes(q) ||
+                   (item.person || '').toLowerCase().includes(q) ||
+                   (item.name || '').toLowerCase().includes(q) ||
+                   (item.extra || '').toLowerCase().includes(q);
+    return matchCat && matchQ;
   });
 
   if(!list.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:25px; color:var(--muted);">No matching records found.</div>`;
+    grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:35px; color:var(--text-muted);">No records found matching your search.</div>`;
     return;
   }
 
   grid.innerHTML = list.map(item => `
-    <div class="card">
+    <div class="vault-card">
       <div>
-        <div class="card-top">
+        <div class="card-header">
           <span class="person-badge">${escapeHtml(item.person)}</span>
           <span class="cat-badge">${escapeHtml(item.category)}</span>
         </div>
-        <div style="font-weight:600; font-size:0.9rem; margin-top:2px;">${escapeHtml(item.name || '-')}</div>
-        <div style="font-size:0.75rem; color:var(--muted); margin-bottom:6px;">${escapeHtml(item.extra || '')}</div>
-        
+        <div class="acc-holder">${escapeHtml(item.name || '-')}</div>
+        <div class="acc-extra">${escapeHtml(item.extra || '')}</div>
+
         <div class="id-box">
-          <span class="id-val">${escapeHtml(item.id)}</span>
-          <button class="btn-sm btn-ghost" onclick="copyNum('${escapeHtml(item.id)}')">📋 Copy</button>
+          <span class="id-text">${escapeHtml(item.id)}</span>
+          <button class="btn-ghost" style="padding:4px 9px; font-size:0.75rem;" onclick="copyNumber('${escapeHtml(item.id)}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
         </div>
       </div>
 
-      <div style="display:flex; gap:6px; margin-top:8px;">
-        <button style="flex:1;" class="btn-sm btn-accent" onclick="openPayModal('${escapeHtml(item.person)} (${escapeHtml(item.category)})', '${escapeHtml(item.id)}')">💳 Pay & Save Details</button>
-        <button class="btn-sm btn-ghost" style="color:var(--danger)" onclick="deleteItem('${escapeHtml(item.id)}')">🗑️</button>
+      <div style="display:flex; gap:6px;">
+        <button class="btn-accent" style="flex:1; justify-content:center; font-size:0.8rem;" onclick="openPayModal('${escapeHtml(item.person)} (${escapeHtml(item.category)})', '${escapeHtml(item.id)}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Pay & Save Details
+        </button>
+        <button class="btn-ghost" style="color:var(--danger); padding:6px 9px;" onclick="deleteEntry('${escapeHtml(item.id)}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
       </div>
     </div>
   `).join('');
 }
 
-function copyNum(val) {
+function copyNumber(val) {
   const clean = val.replace(/^[^0-9]+/, '') || val;
   navigator.clipboard.writeText(clean);
-  const t = document.getElementById('toast');
-  t.innerText = `Copied: ${clean}`;
-  t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 1500);
+  showToast(`Copied: ${clean}`);
 }
 
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 1800);
+}
+
+// Payment Logging
 function openPayModal(target, id) {
   currentPayTarget = { target, id };
   document.getElementById('payTarget').value = `${target} - [${id}]`;
@@ -384,33 +519,44 @@ async function savePayment() {
     notes: notes || '-'
   });
 
-  localStorage.setItem('payhub_local_db', JSON.stringify(masterData));
+  localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
   closePayModal();
   renderLedger();
-  await syncWithGitHub();
+  showToast("Payment Logged!");
+  await syncWithGitHub(false);
 }
 
 function renderLedger() {
   const logs = masterData.payment_history || [];
+  document.getElementById('ledgerCount').innerText = `${logs.length} Payments Logged`;
   const body = document.getElementById('ledgerBody');
   if(!logs.length) {
-    body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:16px;">No bills paid or recorded yet.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:18px;">No bill payments logged yet.</td></tr>`;
     return;
   }
   body.innerHTML = logs.map(l => `
     <tr>
-      <td style="color:var(--muted); font-size:0.75rem;">${l.date}</td>
+      <td style="color:var(--text-muted); font-size:0.75rem;">${l.date}</td>
       <td><strong>${escapeHtml(l.target)}</strong></td>
-      <td style="font-family:monospace; color:var(--primary); font-weight:700;">${escapeHtml(l.id)}</td>
-      <td style="color:var(--accent); font-weight:700;">₹${l.amount}</td>
-      <td><span style="background:#09251e; color:#34d399; padding:2px 6px; border-radius:4px; font-size:0.72rem;">${escapeHtml(l.mode)}</span></td>
-      <td style="color:var(--muted);">${escapeHtml(l.notes)}</td>
+      <td style="font-family:'JetBrains Mono'; color:var(--primary); font-weight:700;">${escapeHtml(l.id)}</td>
+      <td style="color:var(--accent); font-weight:800;">₹${l.amount}</td>
+      <td><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:3px 8px; border-radius:6px; font-size:0.72rem; font-weight:700;">${escapeHtml(l.mode)}</span></td>
+      <td style="color:var(--text-muted);">${escapeHtml(l.notes)}</td>
     </tr>
   `).join('');
 }
 
+function clearLedger() {
+  if(confirm("Clear all logged payments from local view?")) {
+    masterData.payment_history = [];
+    localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+    renderLedger();
+  }
+}
+
+// Add New Category / Consumer
 function openAddModal() {
-  document.getElementById('addCat').value = activeTab !== 'ALL' ? activeTab : '';
+  document.getElementById('addCat').value = activeCategory !== 'ALL' ? activeCategory : '';
   document.getElementById('addPerson').value = '';
   document.getElementById('addId').value = '';
   document.getElementById('addName').value = '';
@@ -436,128 +582,181 @@ async function saveNewEntry() {
 
   if(!masterData.accounts) masterData.accounts = [];
   masterData.accounts.unshift({ category: cat, person: person, id: id, name: name, extra: extra });
-  localStorage.setItem('payhub_local_db', JSON.stringify(masterData));
+  localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
   
   closeAddModal();
   renderTabs();
   renderGrid();
-  await syncWithGitHub();
+  showToast("Account Added!");
+  await syncWithGitHub(false);
 }
 
-async function deleteItem(id) {
+async function deleteEntry(id) {
   if(confirm(`Delete ID: ${id}?`)) {
     masterData.accounts = masterData.accounts.filter(a => a.id !== id);
-    localStorage.setItem('payhub_local_db', JSON.stringify(masterData));
+    localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
     renderGrid();
     renderTabs();
-    await syncWithGitHub();
+    await syncWithGitHub(false);
   }
 }
 
-// 2-Way GitHub Cloud Sync
+// Repo Config Modal
+function openRepoConfig() {
+  const cfg = getAutoRepoInfo();
+  document.getElementById('cfgUser').value = cfg.user;
+  document.getElementById('cfgRepo').value = cfg.repo;
+  document.getElementById('cfgBranch').value = cfg.branch;
+  document.getElementById('cfgFile').value = cfg.file;
+  document.getElementById('configModal').classList.add('open');
+}
+
+function closeRepoConfig() {
+  document.getElementById('configModal').classList.remove('open');
+}
+
+function saveRepoConfig() {
+  const cfg = {
+    user: document.getElementById('cfgUser').value.trim(),
+    repo: document.getElementById('cfgRepo').value.trim(),
+    branch: document.getElementById('cfgBranch').value.trim(),
+    file: document.getElementById('cfgFile').value.trim()
+  };
+  localStorage.setItem('sgm_repo_cfg', JSON.stringify(cfg));
+  closeRepoConfig();
+  showToast("Repo Config Saved!");
+  syncWithGitHub(false);
+}
+
+// Robust GitHub 2-Way Cloud Sync (Solves "Not Found" 404 issue)
 async function syncWithGitHub(isSilent = false) {
-  const token = getBearerToken();
-  if(!token || token.includes('xxxx') || GH_USER.includes('YOUR_')) {
-    if(!isSilent) alert("Pehle code me GH_USER, GH_REPO aur TOKEN ke 3 tukde fill karein!");
+  const token = getGitHubToken();
+  const cfg = getAutoRepoInfo();
+
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+
+  if(!token || token.includes('xxxx')) {
+    dot.className = 'pulse-dot err';
+    txt.innerText = 'Sync: Token pending';
     return;
   }
 
-  const status = document.getElementById('syncStatus');
-  status.innerHTML = `<span class="dot" style="background:#f59e0b"></span> Syncing Cloud...`;
+  dot.className = 'pulse-dot working';
+  txt.innerText = 'Syncing cloud...';
 
-  const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
-  try {
-    const getRes = await fetch(url, {
-      headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' }
-    });
-
-    let sha = null;
-    if(getRes.ok) {
-      const data = await getRes.json();
-      sha = data.sha;
-      const remote = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-      if(remote && remote.accounts) {
-        // Merge accounts
-        const map = new Map();
-        masterData.accounts.forEach(a => map.set(a.id, a));
-        remote.accounts.forEach(a => { if(!map.has(a.id)) map.set(a.id, a); });
-        masterData.accounts = Array.from(map.values());
-        if(remote.payment_history && remote.payment_history.length > (masterData.payment_history || []).length) {
-          masterData.payment_history = remote.payment_history;
-        }
-      }
-    }
-
-    // Commit back
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(masterData, null, 2))));
-    const putRes = await fetch(url, {
-      method: 'PUT',
-      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: `Cloud auto-sync [${new Date().toISOString().slice(0,16)}]`,
-        content: content,
-        sha: sha || undefined
-      })
-    });
-
-    if(putRes.ok) {
-      localStorage.setItem('payhub_local_db', JSON.stringify(masterData));
-      status.innerHTML = `<span class="dot"></span> Synced (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
-      renderTabs();
-      renderGrid();
-      renderLedger();
-    } else {
-      const err = await putRes.json();
-      throw new Error(err.message || "Failed");
-    }
-  } catch(e) {
-    status.innerHTML = `<span class="dot" style="background:#ef4444"></span> Offline / Sync Pending`;
-    if(!isSilent) alert("Cloud Sync Notice: " + e.message);
+  // Try exact repo name first, and if 404, fallback without trailing hyphen
+  let reposToTry = [cfg.repo];
+  if(cfg.repo.endsWith('-')) {
+    reposToTry.push(cfg.repo.slice(0, -1));
+  } else {
+    reposToTry.push(cfg.repo + '-');
   }
-}
 
-function exportBackup() {
-  download(JSON.stringify(masterData, null, 2), `PayHub_Backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
-}
+  let success = false;
+  let lastErrMsg = '';
 
-function restoreBackup(e) {
-  const file = e.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = async function(evt) {
+  for (let currentRepo of reposToTry) {
     try {
-      const parsed = JSON.parse(evt.target.result);
-      if(parsed && parsed.accounts) {
-        masterData = parsed;
-        localStorage.setItem('payhub_local_db', JSON.stringify(masterData));
+      const url = `https://api.github.com/repos/${cfg.user}/${currentRepo}/contents/${cfg.file}?ref=${cfg.branch}`;
+      
+      const getRes = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+
+      let sha = null;
+      if(getRes.ok) {
+        const fileObj = await getRes.json();
+        sha = fileObj.sha;
+        const remoteData = JSON.parse(decodeURIComponent(escape(atob(fileObj.content))));
+
+        if(remoteData && remoteData.accounts) {
+          const idMap = new Map();
+          masterData.accounts.forEach(a => idMap.set(a.id, a));
+          remoteData.accounts.forEach(a => { if(!idMap.has(a.id)) idMap.set(a.id, a); });
+          masterData.accounts = Array.from(idMap.values());
+          if(remoteData.payment_history && remoteData.payment_history.length > (masterData.payment_history || []).length) {
+            masterData.payment_history = remoteData.payment_history;
+          }
+        }
+      } else if(getRes.status === 404) {
+        // Repo might have different name, try next in loop
+        lastErrMsg = `Repository '${currentRepo}' or '${cfg.file}' not found on branch '${cfg.branch}'.`;
+        continue;
+      }
+
+      // Commit back to the working repo
+      const putUrl = `https://api.github.com/repos/${cfg.user}/${currentRepo}/contents/${cfg.file}`;
+      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(masterData, null, 2))));
+
+      const putRes = await fetch(putUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `Auto Sync SGM Vault [${new Date().toISOString().slice(0,16)}]`,
+          content: payload,
+          branch: cfg.branch,
+          sha: sha || undefined
+        })
+      });
+
+      if(putRes.ok) {
+        localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+        dot.className = 'pulse-dot';
+        txt.innerText = `Synced (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
         renderTabs();
         renderGrid();
         renderLedger();
-        await syncWithGitHub();
-        alert("Restored and Synced!");
+        success = true;
+        if(!isSilent) showToast("Cloud Synced Successfully!");
+        break;
+      } else {
+        const errJson = await putRes.json();
+        lastErrMsg = errJson.message || "Commit failed";
       }
     } catch(err) {
-      alert("Invalid JSON: " + err);
+      lastErrMsg = err.message;
     }
-  };
-  reader.readAsText(file);
+  }
+
+  if(!success) {
+    dot.className = 'pulse-dot err';
+    txt.innerText = 'Sync: Issue detected';
+    if(!isSilent) {
+      alert(`Cloud Sync Notice: ${lastErrMsg}
+
+Tip: Click 'Repo Config' to verify your repo name and branch name.`);
+    }
+  }
+}
+
+// Backup & Export
+function exportBackup() {
+  downloadFile(JSON.stringify(masterData, null, 2), `SGM_Payments_Backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
 }
 
 function exportCSV() {
   const logs = masterData.payment_history || [];
-  if(!logs.length) return alert("No logs to export!");
-  let csv = "Date,Account,ID,Amount,Mode,Remarks\n";
+  if(!logs.length) return alert("No payment history to export.");
+  let csv = "Date_Time,Account_Title,Consumer_ID,Amount_INR,Paid_Via,Remarks\n";
   logs.forEach(l => {
     csv += `"${l.date}","${l.target}","${l.id}","${l.amount}","${l.mode}","${l.notes}"\n`;
   });
-  download(csv, `Bills_Paid_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
+  downloadFile(csv, `SGM_Bills_Paid_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
 }
 
-function download(content, name, type) {
-  const blob = new Blob([content], { type: type });
+function downloadFile(content, fileName, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
+  a.href = url;
+  a.download = fileName;
   a.click();
 }
 

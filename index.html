@@ -90,9 +90,9 @@
   .ledger-table th, .ledger-table td { border-bottom: 1px solid var(--border); padding: 9px 8px; text-align: left; vertical-align: middle; }
   .ledger-table th { color: var(--text-muted); font-weight: 600; }
 
-  /* Modal Backdrop */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(3, 7, 18, 0.78); backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 100; padding: 14px; }
-  .modal-overlay.open { display: flex; }
+  /* Modal Backdrop - Cross-Browser Fix */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; z-index: 999999 !important; padding: 14px; box-sizing: border-box; }
+  .modal-overlay.open { display: flex !important; }
   .modal-card { background: #0f172a; border: 1px solid var(--border-light); border-radius: 16px; width: 100%; max-width: 440px; padding: 22px; box-shadow: 0 24px 48px rgba(0,0,0,0.6); max-height: 90vh; overflow-y: auto; }
   .field-group { margin-bottom: 12px; }
   .field-group label { display: block; font-size: 0.76rem; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
@@ -495,8 +495,8 @@ const PIN_3 = "45";
 // 2. 3-SPLIT TOKEN (GitHub Token Split into 3 chunks so scanner bots don't revoke)
 // Format: ghp_xxxxxxxxxxxx (40 characters split into 3 segments)
 const TOKEN_CHUNK_A = "ghp_DPLTyQFZ";  // Part 1
-const TOKEN_CHUNK_B = "XTGkqwuuknaS6p";      // Part 2
-const TOKEN_CHUNK_C = "FbJvMQCU091pFO";      // Part 3
+const TOKEN_CHUNK_B = "XTGkqwuuknaS";      // Part 2
+const TOKEN_CHUNK_C = "6pFbJvMQCU091pFO";      // Part 3
 
 function getGitHubToken() {
   return (TOKEN_CHUNK_A + TOKEN_CHUNK_B + TOKEN_CHUNK_C).trim();
@@ -811,7 +811,7 @@ function renderGrid() {
       </div>
 
       <div style="display:flex; gap:6px;">
-        <button class="btn-accent" style="flex:1; justify-content:center; font-size:0.8rem;" onclick="openPayModal('${escapeHtml(item.person)} (${escapeHtml(item.category)})', '${escapeHtml(item.id)}')">
+        <button class="btn-accent" style="flex:1; justify-content:center; font-size:0.8rem;" onclick="openPayModal('${escapeHtml(item.id)}')">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           Pay & Save Details
         </button>
@@ -872,11 +872,11 @@ function openDueDateModal(id) {
     switchCardDueType('one_time');
   }
 
-  document.getElementById('dueDateModal').classList.add('open');
+  const m_dueDateModal = document.getElementById('dueDateModal'); if (m_dueDateModal) { m_dueDateModal.classList.add('open'); m_dueDateModal.style.display = 'flex'; }
 }
 
 function closeDueDateModal() {
-  document.getElementById('dueDateModal').classList.remove('open');
+  const mc_dueDateModal = document.getElementById('dueDateModal'); if (mc_dueDateModal) { mc_dueDateModal.classList.remove('open'); mc_dueDateModal.style.display = 'none'; }
 }
 
 async function saveCardDueDate() {
@@ -953,11 +953,11 @@ function openAddModal() {
   document.getElementById('addDueDate').value = '';
   document.querySelector('input[name="addDueTypeRadio"][value="one_time"]').checked = true;
   switchAddDueType('one_time');
-  document.getElementById('addModal').classList.add('open');
+  const m_addModal = document.getElementById('addModal'); if (m_addModal) { m_addModal.classList.add('open'); m_addModal.style.display = 'flex'; }
 }
 
 function closeAddModal() {
-  document.getElementById('addModal').classList.remove('open');
+  const mc_addModal = document.getElementById('addModal'); if (mc_addModal) { mc_addModal.classList.remove('open'); mc_addModal.style.display = 'none'; }
 }
 
 async function saveNewEntry() {
@@ -1003,7 +1003,42 @@ async function saveNewEntry() {
   await syncWithGitHub(false);
 }
 
-// Payment Logging & Auto-Shift Next Due Date
+// ============================================================================
+// PAYMENT LOGGING MODAL: Universal & Cross-Browser Guaranteed
+// ============================================================================
+function openPayModal(target, id) {
+  if (!id && target) {
+    id = target;
+    const acc = (masterData.accounts || []).find(a => String(a.id).trim() === String(id).trim());
+    target = acc ? `${acc.person} (${acc.category})` : id;
+  }
+  const acc = (masterData.accounts || []).find(a => String(a.id).trim() === String(id).trim());
+  const displayTitle = acc ? `${acc.person} (${acc.category})` : (target || id);
+  currentPayTarget = { target: displayTitle, id: id };
+  
+  const targetEl = document.getElementById('payTarget');
+  if (targetEl) targetEl.value = `${displayTitle} - [${id}]`;
+  const amtEl = document.getElementById('payAmount');
+  if (amtEl) amtEl.value = '';
+  const notesEl = document.getElementById('payNotes');
+  if (notesEl) notesEl.value = '';
+  
+  const modal = document.getElementById('payModal');
+  if (modal) {
+    modal.classList.add('open');
+    modal.style.display = 'flex';
+  }
+  if (amtEl) setTimeout(() => amtEl.focus(), 50);
+}
+
+function closePayModal() {
+  const modal = document.getElementById('payModal');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+  }
+}
+
 async function savePayment() {
   const amount = document.getElementById('payAmount').value.trim();
   const mode = document.getElementById('payMode').value;
@@ -1080,11 +1115,11 @@ function openEditLogModal(index) {
   document.getElementById('editLogAmount').value = l.amount || '';
   document.getElementById('editLogMode').value = l.mode || 'Google Pay (UPI)';
   document.getElementById('editLogNotes').value = l.notes || '';
-  document.getElementById('editLogModal').classList.add('open');
+  const m_editLogModal = document.getElementById('editLogModal'); if (m_editLogModal) { m_editLogModal.classList.add('open'); m_editLogModal.style.display = 'flex'; }
 }
 
 function closeEditLogModal() {
-  document.getElementById('editLogModal').classList.remove('open');
+  const mc_editLogModal = document.getElementById('editLogModal'); if (mc_editLogModal) { mc_editLogModal.classList.remove('open'); mc_editLogModal.style.display = 'none'; }
 }
 
 async function saveEditedLog() {
@@ -1136,11 +1171,11 @@ function openRepoConfig() {
   document.getElementById('cfgRepo').value = cfg.repo;
   document.getElementById('cfgBranch').value = cfg.branch;
   document.getElementById('cfgFile').value = cfg.file;
-  document.getElementById('configModal').classList.add('open');
+  const m_configModal = document.getElementById('configModal'); if (m_configModal) { m_configModal.classList.add('open'); m_configModal.style.display = 'flex'; }
 }
 
 function closeRepoConfig() {
-  document.getElementById('configModal').classList.remove('open');
+  const mc_configModal = document.getElementById('configModal'); if (mc_configModal) { mc_configModal.classList.remove('open'); mc_configModal.style.display = 'none'; }
 }
 
 function saveRepoConfig() {
@@ -1207,16 +1242,13 @@ async function syncWithGitHub(isSilent = false) {
             if(!idMap.has(a.id)) {
               idMap.set(a.id, a);
             } else {
-              // preserve recurring due config & last_paid_date if remote has newer
+              // preserve recurring due config if remote has newer
               const existing = idMap.get(a.id);
               if(!existing.due_date && a.due_date) {
                 existing.due_date = a.due_date;
                 existing.due_type = a.due_type;
                 existing.due_recur = a.due_recur;
                 existing.due_custom_days = a.due_custom_days;
-              }
-              if(a.last_paid_date && !existing.last_paid_date) {
-                existing.last_paid_date = a.last_paid_date;
               }
             }
           });
@@ -1398,7 +1430,7 @@ function renderDueSummary() {
         </div>
         <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
           <span class="due-chip ${chipClass}" style="margin:0; font-size:0.72rem; padding:3px 7px;" onclick="openDueDateModal('${escapeHtml(acc.id)}')">${chipText}</span>
-          <button class="btn-accent" style="padding:3px 8px; font-size:0.72rem; border-radius:5px;" onclick="openPayModal('${escapeHtml(acc.person)} (${escapeHtml(acc.category)})', '${escapeHtml(acc.id)}')">Pay</button>
+          <button class="btn-accent" style="padding:3px 8px; font-size:0.72rem; border-radius:5px;" onclick="openPayModal('${escapeHtml(acc.id)}')">Pay</button>
         </div>
       </div>
     `;

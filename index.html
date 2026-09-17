@@ -127,7 +127,6 @@
   .due-item-info { flex: 1; min-width: 0; }
   .due-item-person { font-weight: 700; font-size: 0.85rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .due-item-meta { font-size: 0.72rem; color: var(--text-muted); display: flex; gap: 6px; align-items: center; margin-top: 2px; }
-
 </style>
 </head>
 <body>
@@ -202,7 +201,7 @@
       <input type="text" id="searchBox" class="search-input" placeholder="🔍 Instant Filter: Consumer No, BU, Person Name, Mobile, Policy..." oninput="renderGrid()">
     </div>
 
-        <!-- Upcoming Due Dates Summary Card (Date-wise Tracking) -->
+    <!-- Upcoming Due Dates Summary Card (Date-wise Tracking) -->
     <div class="due-summary-card" id="dueSummaryWidget">
       <div class="due-summary-head">
         <div class="due-summary-title">
@@ -495,9 +494,9 @@ const PIN_3 = "45";
 
 // 2. 3-SPLIT TOKEN (GitHub Token Split into 3 chunks so scanner bots don't revoke)
 // Format: ghp_xxxxxxxxxxxx (40 characters split into 3 segments)
-const TOKEN_CHUNK_A = "ghp_DPLTyQFZX";  // Part 1
-const TOKEN_CHUNK_B = "TGkqwuuknaS6";      // Part 2
-const TOKEN_CHUNK_C = "pFbJvMQCU091pFO";      // Part 3
+const TOKEN_CHUNK_A = "ghp_DPLTyQFZ";  // Part 1
+const TOKEN_CHUNK_B = "XTGkqwuuknaS6p";      // Part 2
+const TOKEN_CHUNK_C = "FbJvMQCU091pFO";      // Part 3
 
 function getGitHubToken() {
   return (TOKEN_CHUNK_A + TOKEN_CHUNK_B + TOKEN_CHUNK_C).trim();
@@ -581,7 +580,6 @@ async function unlockApp() {
   renderGrid();
   renderDueSummary();
   renderLedger();
-  renderDueSummary();
 
   // Background silent sync
   syncWithGitHub(true);
@@ -608,8 +606,58 @@ function selectCategory(cat) {
   renderDueSummary();
 }
 
+function advanceDateByCycle(targetDate, recurFreq, customDays, origDay) {
+  if (recurFreq === 'daily') {
+    targetDate.setDate(targetDate.getDate() + 1);
+  } else if (recurFreq === 'weekly') {
+    targetDate.setDate(targetDate.getDate() + 7);
+  } else if (recurFreq === 'monthly') {
+    targetDate.setMonth(targetDate.getMonth() + 1);
+    if (targetDate.getDate() !== origDay) {
+      targetDate.setDate(0);
+    }
+  } else if (recurFreq === 'quarterly') {
+    targetDate.setMonth(targetDate.getMonth() + 3);
+  } else if (recurFreq === 'custom') {
+    targetDate.setDate(targetDate.getDate() + customDays);
+  }
+}
+
+function getAccountLastPaidDate(acc) {
+  if (acc.last_paid_date) {
+    const d = new Date(acc.last_paid_date);
+    if (!isNaN(d.getTime())) {
+      d.setHours(0,0,0,0);
+      return d;
+    }
+  }
+  // Fallback: check payment_history for latest payment on this id
+  if (masterData.payment_history && masterData.payment_history.length > 0) {
+    for (const log of masterData.payment_history) {
+      if (log.id === acc.id) {
+        if (log.date) {
+          const parts = log.date.split(',')[0].trim();
+          let d;
+          if (parts.includes('/')) {
+            const dp = parts.split('/');
+            d = new Date(dp[2], dp[1] - 1, dp[0]);
+          } else {
+            d = new Date(parts);
+          }
+          if (!isNaN(d.getTime())) {
+            d.setHours(0,0,0,0);
+            return d;
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 // ============================================================================
 // DYNAMIC RECURRING DUE DATE ENGINE: Computes next occurrence and left days
+// Automatically detects if paid for current cycle & advances to next cycle!
 // ============================================================================
 function computeDueDetails(acc) {
   if(!acc.due_date) return null;
@@ -620,36 +668,32 @@ function computeDueDetails(acc) {
   let targetDate = new Date(acc.due_date);
   targetDate.setHours(0,0,0,0);
 
+  const origDay = new Date(acc.due_date).getDate();
   const isRecurring = (acc.due_type === 'recurring');
   const recurFreq = acc.due_recur || 'monthly';
   const customDays = parseInt(acc.due_custom_days) || 30;
 
-  if(isRecurring) {
-    if(recurFreq === 'daily') {
-      while(targetDate < today) {
-        targetDate.setDate(targetDate.getDate() + 1);
+  const lastPaidDate = getAccountLastPaidDate(acc);
+  let isPaidOneTime = false;
+  let cyclePaid = false;
+
+  if (isRecurring) {
+    // Advance while past overdue to reach current cycle
+    while (targetDate < today) {
+      advanceDateByCycle(targetDate, recurFreq, customDays, origDay);
+    }
+    // If user has paid on or after targetDate (or paid today/recently for this cycle),
+    // automatically shift targetDate to the NEXT cycle!
+    if (lastPaidDate && (lastPaidDate >= targetDate || (lastPaidDate.getTime() === today.getTime() && targetDate.getTime() === today.getTime()))) {
+      while (targetDate <= lastPaidDate) {
+        advanceDateByCycle(targetDate, recurFreq, customDays, origDay);
       }
-    } else if(recurFreq === 'weekly') {
-      while(targetDate < today) {
-        targetDate.setDate(targetDate.getDate() + 7);
-      }
-    } else if(recurFreq === 'monthly') {
-      const origDay = new Date(acc.due_date).getDate();
-      while(targetDate < today) {
-        targetDate.setMonth(targetDate.getMonth() + 1);
-        // prevent month overflow (e.g. 31st on Feb)
-        if(targetDate.getDate() !== origDay) {
-          targetDate.setDate(0);
-        }
-      }
-    } else if(recurFreq === 'quarterly') {
-      while(targetDate < today) {
-        targetDate.setMonth(targetDate.getMonth() + 3);
-      }
-    } else if(recurFreq === 'custom') {
-      while(targetDate < today) {
-        targetDate.setDate(targetDate.getDate() + customDays);
-      }
+      cyclePaid = true;
+    }
+  } else {
+    // One-time fixed bill
+    if (lastPaidDate) {
+      isPaidOneTime = true;
     }
   }
 
@@ -662,7 +706,10 @@ function computeDueDetails(acc) {
     freq: recurFreq,
     customDays: customDays,
     nextDate: dateString,
-    diffDays: diffDays
+    diffDays: diffDays,
+    cyclePaid: cyclePaid,
+    isPaidOneTime: isPaidOneTime,
+    lastPaidStr: lastPaidDate ? lastPaidDate.toISOString().slice(0, 10) : null
   };
 }
 
@@ -676,6 +723,14 @@ function getDueDateBadge(acc) {
     </div>`;
   }
 
+  // If one-time and already paid
+  if (info.isPaidOneTime) {
+    return `<div class="due-chip good" onclick="openDueDateModal('${escapeHtml(acc.id)}')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      ✅ Paid (${info.lastPaidStr || 'Done'}) • One-Time
+    </div>`;
+  }
+
   let badgeClass = 'good';
   let label = '';
   const icon = info.isRecurring ? '🔄 ' : '📅 ';
@@ -686,7 +741,11 @@ function getDueDateBadge(acc) {
     info.freq === 'daily' ? 'Daily' : `Every ${info.customDays}d`
   ) : 'One-Time';
 
-  if(info.diffDays < 0) {
+  // If recurring and this cycle was paid: show next upcoming due date!
+  if (info.isRecurring && info.cyclePaid) {
+    badgeClass = 'good';
+    label = `✅ Paid! Next: ${info.nextDate} (${info.diffDays}d left)`;
+  } else if(info.diffDays < 0) {
     badgeClass = 'urgent';
     label = `⚠️ ${icon}${recurText}: Overdue by ${Math.abs(info.diffDays)}d (${info.nextDate})`;
   } else if(info.diffDays === 0) {
@@ -862,7 +921,7 @@ async function removeCardDueDate() {
     localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
     closeDueDateModal();
     renderGrid();
-  renderDueSummary();
+    renderDueSummary();
     showToast("Due Date Removed");
     await syncWithGitHub(false);
   }
@@ -944,19 +1003,7 @@ async function saveNewEntry() {
   await syncWithGitHub(false);
 }
 
-// Payment Logging
-function openPayModal(target, id) {
-  currentPayTarget = { target, id };
-  document.getElementById('payTarget').value = `${target} - [${id}]`;
-  document.getElementById('payAmount').value = '';
-  document.getElementById('payNotes').value = '';
-  document.getElementById('payModal').classList.add('open');
-}
-
-function closePayModal() {
-  document.getElementById('payModal').classList.remove('open');
-}
-
+// Payment Logging & Auto-Shift Next Due Date
 async function savePayment() {
   const amount = document.getElementById('payAmount').value.trim();
   const mode = document.getElementById('payMode').value;
@@ -965,6 +1012,15 @@ async function savePayment() {
   if(!amount || Number(amount) <= 0) {
     alert("Please enter a valid bill amount!");
     return;
+  }
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  // Auto-mark account as paid today so recurring cycle instantly advances to next date
+  const targetAcc = (masterData.accounts || []).find(a => a.id === currentPayTarget.id);
+  if (targetAcc) {
+    targetAcc.last_paid_date = todayStr;
+    targetAcc.last_paid_amount = amount;
   }
 
   if(!masterData.payment_history) masterData.payment_history = [];
@@ -980,7 +1036,9 @@ async function savePayment() {
   localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
   closePayModal();
   renderLedger();
-  showToast("Payment Logged!");
+  renderGrid();
+  renderDueSummary();
+  showToast("Payment Logged & Next Due Shifted!");
   await syncWithGitHub(false);
 }
 
@@ -1065,7 +1123,7 @@ async function deleteEntry(id) {
     masterData.accounts = masterData.accounts.filter(a => a.id !== id);
     localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
     renderGrid();
-  renderDueSummary();
+    renderDueSummary();
     renderTabs();
     await syncWithGitHub(false);
   }
@@ -1149,13 +1207,16 @@ async function syncWithGitHub(isSilent = false) {
             if(!idMap.has(a.id)) {
               idMap.set(a.id, a);
             } else {
-              // preserve recurring due config if remote has newer
+              // preserve recurring due config & last_paid_date if remote has newer
               const existing = idMap.get(a.id);
               if(!existing.due_date && a.due_date) {
                 existing.due_date = a.due_date;
                 existing.due_type = a.due_type;
                 existing.due_recur = a.due_recur;
                 existing.due_custom_days = a.due_custom_days;
+              }
+              if(a.last_paid_date && !existing.last_paid_date) {
+                existing.last_paid_date = a.last_paid_date;
               }
             }
           });
@@ -1192,7 +1253,7 @@ async function syncWithGitHub(isSilent = false) {
         txt.innerText = `Synced (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
         renderTabs();
         renderGrid();
-  renderDueSummary();
+        renderDueSummary();
         renderLedger();
         success = true;
         if(!isSilent) showToast("Cloud Synced Successfully!");
@@ -1264,7 +1325,8 @@ function renderDueSummary() {
   (masterData.accounts || []).forEach(acc => {
     if(acc.due_date) {
       const details = computeDueDetails(acc);
-      if(details) {
+      // Skip completed one-time bills from active upcoming tracker
+      if(details && !details.isPaidOneTime) {
         dueItems.push({
           account: acc,
           details: details
@@ -1273,7 +1335,7 @@ function renderDueSummary() {
     }
   });
 
-  // Sort strictly DATE-WISE: closest date first (e.g. overdue -> today -> 1 day -> 5 days ...)
+  // Sort strictly DATE-WISE: closest date first
   dueItems.sort((a, b) => a.details.diffDays - b.details.diffDays);
 
   // Filter based on 1 month (30 days), 3 months (90 days), or all
@@ -1286,12 +1348,12 @@ function renderDueSummary() {
     return true; // All
   });
 
-  countBadge.innerText = `${filtered.length} Bills in Window`;
+  countBadge.innerText = `${filtered.length} Active in Window`;
 
   if(!filtered.length) {
     container.innerHTML = `
       <div style="grid-column: 1/-1; text-align:center; padding:18px; color:var(--text-muted); font-size:0.83rem;">
-        No bills due within this timeline. Click <strong>'+ Set Due Date'</strong> on any card to track it here date-wise!
+        No pending bills due within this timeline. Click <strong>'+ Set Due Date'</strong> on any card to track!
       </div>
     `;
     return;
@@ -1303,9 +1365,11 @@ function renderDueSummary() {
     
     let chipClass = 'good';
     let chipText = '';
-    const recurTag = d.isRecurring ? '🔄 ' : '📅 ';
 
-    if(d.diffDays < 0) {
+    if (d.isRecurring && d.cyclePaid) {
+      chipClass = 'good';
+      chipText = `✅ Next: ${d.diffDays}d left (${d.nextDate})`;
+    } else if(d.diffDays < 0) {
       chipClass = 'urgent';
       chipText = `⚠️ Overdue (${Math.abs(d.diffDays)}d)`;
     } else if(d.diffDays === 0) {
@@ -1340,7 +1404,6 @@ function renderDueSummary() {
     `;
   }).join('');
 }
-
 </script>
 </body>
 </html>

@@ -64,7 +64,10 @@
       "person": "ASHWIN UNCLE",
       "id": "430010161597",
       "extra": "BU: 1937",
-      "name": "SHRI CHANDRAKANT CHHAGANLAL AGRAWAL"
+      "name": "SHRI CHANDRAKANT CHHAGANLAL AGRAWAL",
+      "due_date": "2026-09-17",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

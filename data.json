@@ -55,7 +55,9 @@
       "name": "SMT PUSHPADEVI CHANDRAKANT CHHITARKA",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-17",
+      "last_paid_amount": "3750"
     },
     {
       "category": "MSEB",
@@ -65,7 +67,9 @@
       "name": "SHRI CHANDRAKANT CHHAGANLAL AGRAWAL",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-17",
+      "last_paid_amount": "5530"
     },
     {
       "category": "MSEB",
@@ -192,7 +196,7 @@
       "id": "430010145699",
       "extra": "BU: 1937",
       "name": "THE CHIEF OFFICER M C",
-      "due_date": "2026-09-17",
+      "due_date": "2026-10-17",
       "due_type": "recurring",
       "due_recur": "monthly"
     },
@@ -361,7 +365,12 @@
       "person": "VIJAY MUNDRA",
       "id": "102612075",
       "extra": "Municipal Council Gondia",
-      "name": "VIJAYKUMAR R MUNDRA"
+      "name": "VIJAYKUMAR R MUNDRA",
+      "last_paid_date": "2026-09-19",
+      "last_paid_amount": "430",
+      "due_date": "2026-09-19",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "WATER BILL",

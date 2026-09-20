@@ -319,7 +319,9 @@
       "extra": "DOB: 26-Jun-1968",
       "due_date": "2026-09-21",
       "due_type": "recurring",
-      "due_recur": "quarterly"
+      "due_recur": "quarterly",
+      "last_paid_date": "2026-09-20",
+      "last_paid_amount": "4900"
     },
     {
       "category": "LIC",
@@ -443,6 +445,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "21/9/2026, 2:02:54 am",
+      "target": "MYSELF (LIC)",
+      "id": "978447141",
+      "amount": "4900",
+      "mode": "Credit Card",
+      "notes": "Idfc app"
+    },
     {
       "date": "19/9/2026, 7:38:45 pm",
       "target": "VIJAY MUNDRA (WATER BILL)",

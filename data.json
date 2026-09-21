@@ -119,7 +119,12 @@
       "person": "SANJU UNCLE",
       "id": "430010258914",
       "extra": "BU: 1937",
-      "name": "SHRI KANTILAL JAMNADAS BHAGDEV"
+      "name": "SHRI KANTILAL JAMNADAS BHAGDEV",
+      "due_date": "2026-09-21",
+      "due_type": "recurring",
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-21",
+      "last_paid_amount": "5220"
     },
     {
       "category": "MSEB",
@@ -455,6 +460,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "21/9/2026, 3:07:26 pm",
+      "target": "SANJU UNCLE (MSEB)",
+      "id": "430010258914",
+      "amount": "5220",
+      "mode": "Credit Card",
+      "notes": "RBL CC 1508"
+    },
     {
       "date": "21/9/2026, 3:05:48 pm",
       "target": "SANJU UNCLE (MSEB)",

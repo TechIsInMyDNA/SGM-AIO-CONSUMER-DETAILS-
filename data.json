@@ -133,7 +133,10 @@
       "person": "SANJU UNCLE",
       "id": "430010010122",
       "extra": "BU: 1937",
-      "name": "SANJAYKUMAR GIRISHBHAI BHAGDEO"
+      "name": "SANJAYKUMAR GIRISHBHAI BHAGDEO",
+      "due_date": "2026-09-21",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

@@ -11,7 +11,9 @@
       "due_date": "2026-09-24",
       "due_type": "recurring",
       "due_recur": "custom",
-      "due_custom_days": 28
+      "due_custom_days": 28,
+      "last_paid_date": "2026-09-24",
+      "last_paid_amount": "199"
     },
     {
       "category": "MOBILE RCS",
@@ -478,6 +480,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "24/9/2026, 3:23:50 pm",
+      "target": "AMREE VI (MOBILE RCS)",
+      "id": "9823111323",
+      "amount": "199",
+      "mode": "Google Pay (UPI)",
+      "notes": "AMREE CENTRAL BANK"
+    },
     {
       "date": "23/9/2026, 3:01:19 pm",
       "target": "AMREE JIO (MOBILE RCS)",

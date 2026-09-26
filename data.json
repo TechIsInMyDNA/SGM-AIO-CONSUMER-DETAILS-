@@ -18,7 +18,10 @@
       "person": "SUSHIL UNCLE",
       "id": "430010420321",
       "extra": "BU: 1937",
-      "name": "SMTRADHABAI REWACHAND HARIRAMANI"
+      "name": "SMTRADHABAI REWACHAND HARIRAMANI",
+      "due_date": "2026-09-26",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

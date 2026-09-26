@@ -310,14 +310,19 @@
       "name": "RADHABAI REWACHAND HARIRAMANI",
       "due_date": "2026-09-26",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-26",
+      "last_paid_amount": "8"
     },
     {
       "category": "LANDLINE",
       "person": "SUSHIL UNCLE",
       "id": "07182233939",
       "extra": "STD: 07182",
-      "name": "RAWACHAND BUBHARMAL HARIRAMANI"
+      "name": "RAWACHAND BUBHARMAL HARIRAMANI",
+      "due_date": "2026-09-26",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "LANDLINE",
@@ -511,6 +516,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/9/2026, 10:17:31 am",
+      "target": "SUSHIL UNCLE (LANDLINE)",
+      "id": "07182231199",
+      "amount": "8",
+      "mode": "Credit Card",
+      "notes": "Hdfc 7277/HGAMP08BD20380940405"
+    },
     {
       "date": "26/9/2026, 10:13:05 am",
       "target": "SUSHIL UNCLE (MSEB)",

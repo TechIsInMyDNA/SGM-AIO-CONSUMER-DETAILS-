@@ -174,12 +174,12 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Add New
         </button>
-        <button class="btn-ghost" onclick="syncWithGitHub(false)">
+        <button class="btn-ghost" onclick="syncWithGitHub(false, false)">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           Sync
         </button>
         <button class="btn-ghost" onclick="openRepoConfig()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Repo Config
         </button>
         <button class="btn-ghost" onclick="exportBackup()">
@@ -538,7 +538,6 @@ const PIN_2 = "32";
 const PIN_3 = "45";
 
 // 2. 3-SPLIT TOKEN (GitHub Token Split into 3 chunks so scanner bots don't revoke)
-// Format: ghp_xxxxxxxxxxxx (40 characters split into 3 segments)
 const TOKEN_CHUNK_A = "ghp_DPLTyQFZ";  // Part 1
 const TOKEN_CHUNK_B = "XTGkqwuuknaS";      // Part 2
 const TOKEN_CHUNK_C = "6pFbJvMQCU091pFO";      // Part 3
@@ -549,25 +548,34 @@ function getGitHubToken() {
 
 /* ========================================================================== */
 
-// Auto-detect GitHub Repo details from current browser URL
+// Auto-detect GitHub Repo details from current browser URL with Hyphen Guard
 function getAutoRepoInfo() {
   const host = window.location.hostname;
   const pathParts = window.location.pathname.split('/').filter(Boolean);
   
-  let user = "TECHISINMYDNA";
-  let repo = "SGM-AIO-CONSUMER-DETAILS-"; // Default matching your current repo
+  let user = "TechIsInMyDNA";
+  let repo = "SGM-AIO-CONSUMER-DETAILS-";
 
-  if(host.endsWith('.github.io')) {
+  if (host.endsWith('.github.io')) {
     user = host.split('.')[0];
-    if(pathParts.length > 0) {
+    if (pathParts.length > 0) {
       repo = pathParts[0];
     }
   }
 
+  if (repo === "SGM-AIO-CONSUMER-DETAILS") {
+    repo = "SGM-AIO-CONSUMER-DETAILS-";
+  }
+
   const savedCfg = JSON.parse(localStorage.getItem('sgm_repo_cfg') || '{}');
+  let finalRepo = savedCfg.repo || repo;
+  if (finalRepo === "SGM-AIO-CONSUMER-DETAILS") {
+    finalRepo = "SGM-AIO-CONSUMER-DETAILS-";
+  }
+
   return {
     user: savedCfg.user || user,
-    repo: savedCfg.repo || repo,
+    repo: finalRepo,
     branch: savedCfg.branch || 'main',
     file: savedCfg.file || 'data.json'
   };
@@ -626,8 +634,8 @@ async function unlockApp() {
   renderDueSummary();
   renderLedger();
 
-  // Background silent sync
-  syncWithGitHub(true);
+  // Background silent live sync on unlock
+  syncWithGitHub(true, false);
 }
 
 function lockApp() {
@@ -676,7 +684,6 @@ function getAccountLastPaidDate(acc) {
       return d;
     }
   }
-  // Fallback: check payment_history for latest payment on this id
   if (masterData.payment_history && masterData.payment_history.length > 0) {
     for (const log of masterData.payment_history) {
       if (log.id === acc.id) {
@@ -723,12 +730,9 @@ function computeDueDetails(acc) {
   let cyclePaid = false;
 
   if (isRecurring) {
-    // Advance while past overdue to reach current cycle
     while (targetDate < today) {
       advanceDateByCycle(targetDate, recurFreq, customDays, origDay);
     }
-    // If user has paid on or after targetDate (or paid today/recently for this cycle),
-    // automatically shift targetDate to the NEXT cycle!
     if (lastPaidDate && (lastPaidDate >= targetDate || (lastPaidDate.getTime() === today.getTime() && targetDate.getTime() === today.getTime()))) {
       while (targetDate <= lastPaidDate) {
         advanceDateByCycle(targetDate, recurFreq, customDays, origDay);
@@ -736,7 +740,6 @@ function computeDueDetails(acc) {
       cyclePaid = true;
     }
   } else {
-    // One-time fixed bill
     if (lastPaidDate) {
       isPaidOneTime = true;
     }
@@ -768,7 +771,6 @@ function getDueDateBadge(acc) {
     </div>`;
   }
 
-  // If one-time and already paid
   if (info.isPaidOneTime) {
     return `<div class="due-chip good" onclick="openDueDateModal('${escapeHtml(acc.id)}')">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
@@ -786,7 +788,6 @@ function getDueDateBadge(acc) {
     info.freq === 'daily' ? 'Daily' : `Every ${info.customDays}d`
   ) : 'One-Time';
 
-  // If recurring and this cycle was paid: show next upcoming due date!
   if (info.isRecurring && info.cyclePaid) {
     badgeClass = 'good';
     label = `✅ Paid! Next: ${info.nextDate} (${info.diffDays}d left)`;
@@ -813,7 +814,7 @@ function getDueDateBadge(acc) {
   </div>`;
 }
 
-// Cards Grid
+// Cards Grid with PIN 1441 Edit Details
 function renderGrid() {
   const q = document.getElementById('searchBox').value.toLowerCase();
   const grid = document.getElementById('cardsGrid');
@@ -884,9 +885,7 @@ function showToast(msg) {
   setTimeout(() => t.style.display = 'none', 1800);
 }
 
-// ============================================================================
-// MODAL CONTROLS: DUE DATE MODAL (One-Time vs Recurring)
-// ============================================================================
+// Due Date Modal
 function switchCardDueType(type) {
   document.getElementById('lblCardOneTime').className = (type === 'one_time' ? 'active' : '');
   document.getElementById('lblCardRecurring').className = (type === 'recurring' ? 'active' : '');
@@ -956,7 +955,7 @@ async function saveCardDueDate() {
   renderGrid();
   renderDueSummary();
   showToast("Due Date Configured!");
-  await syncWithGitHub(false);
+  await syncWithGitHub(false, true);
 }
 
 async function removeCardDueDate() {
@@ -971,13 +970,11 @@ async function removeCardDueDate() {
     renderGrid();
     renderDueSummary();
     showToast("Due Date Removed");
-    await syncWithGitHub(false);
+    await syncWithGitHub(false, true);
   }
 }
 
-// ============================================================================
-// MODAL CONTROLS: ADD NEW MODAL (One-Time vs Recurring)
-// ============================================================================
+// Add New Modal
 function switchAddDueType(type) {
   document.getElementById('lblAddOneTime').className = (type === 'one_time' ? 'active' : '');
   document.getElementById('lblAddRecurring').className = (type === 'recurring' ? 'active' : '');
@@ -1048,12 +1045,10 @@ async function saveNewEntry() {
   renderGrid();
   renderDueSummary();
   showToast("Account Added!");
-  await syncWithGitHub(false);
+  await syncWithGitHub(false, true);
 }
 
-// ============================================================================
-// PAYMENT LOGGING MODAL: Universal & Cross-Browser Guaranteed
-// ============================================================================
+// Payment Logging Modal
 function openPayModal(target, id) {
   if (!id && target) {
     id = target;
@@ -1099,7 +1094,6 @@ async function savePayment() {
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
-  // Auto-mark account as paid today so recurring cycle instantly advances to next date
   const targetAcc = (masterData.accounts || []).find(a => a.id === currentPayTarget.id);
   if (targetAcc) {
     targetAcc.last_paid_date = todayStr;
@@ -1122,7 +1116,7 @@ async function savePayment() {
   renderGrid();
   renderDueSummary();
   showToast("Payment Logged & Next Due Shifted!");
-  await syncWithGitHub(false);
+  await syncWithGitHub(false, true);
 }
 
 function renderLedger() {
@@ -1151,7 +1145,7 @@ function renderLedger() {
   `).join('');
 }
 
-// Edit Log Modal Logic
+// Edit Log Modal
 function openEditLogModal(index) {
   currentEditLogIndex = index;
   const l = masterData.payment_history[index];
@@ -1190,7 +1184,7 @@ async function saveEditedLog() {
   closeEditLogModal();
   renderLedger();
   showToast("Record Updated!");
-  await syncWithGitHub(false);
+  await syncWithGitHub(false, true);
 }
 
 function clearLedger() {
@@ -1208,7 +1202,7 @@ async function deleteEntry(id) {
     renderGrid();
     renderDueSummary();
     renderTabs();
-    await syncWithGitHub(false);
+    await syncWithGitHub(false, true);
   }
 }
 
@@ -1236,11 +1230,11 @@ function saveRepoConfig() {
   localStorage.setItem('sgm_repo_cfg', JSON.stringify(cfg));
   closeRepoConfig();
   showToast("Repo Config Saved!");
-  syncWithGitHub(false);
+  syncWithGitHub(false, false);
 }
 
-// Robust GitHub 2-Way Cloud Sync (Solves "Not Found" 404 issue)
-async function syncWithGitHub(isSilent = false) {
+// Robust GitHub 2-Way Seamless Live Sync Engine
+async function syncWithGitHub(isSilent = false, isPush = false) {
   const token = getGitHubToken();
   const cfg = getAutoRepoInfo();
 
@@ -1248,113 +1242,107 @@ async function syncWithGitHub(isSilent = false) {
   const txt = document.getElementById('syncText');
 
   if(!token || token.includes('xxxx')) {
-    dot.className = 'pulse-dot err';
-    txt.innerText = 'Sync: Token pending';
+    if(dot) dot.className = 'pulse-dot err';
+    if(txt) txt.innerText = 'Sync: Token pending';
     return;
   }
 
-  dot.className = 'pulse-dot working';
-  txt.innerText = 'Syncing cloud...';
+  if(dot) dot.className = 'pulse-dot working';
+  if(txt) txt.innerText = isPush ? 'Pushing...' : 'Live syncing...';
 
-  let reposToTry = [cfg.repo];
-  if(cfg.repo.endsWith('-')) {
-    reposToTry.push(cfg.repo.slice(0, -1));
-  } else {
-    reposToTry.push(cfg.repo + '-');
-  }
-
-  let success = false;
-  let lastErrMsg = '';
-
-  for (let currentRepo of reposToTry) {
-    try {
-      const url = `https://api.github.com/repos/${cfg.user}/${currentRepo}/contents/${cfg.file}?ref=${cfg.branch}`;
-      
-      const getRes = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github.v3+json'
-        }
-      });
-
-      let sha = null;
-      if(getRes.ok) {
-        const fileObj = await getRes.json();
-        sha = fileObj.sha;
-        const remoteData = JSON.parse(decodeURIComponent(escape(atob(fileObj.content))));
-
-        if(remoteData && remoteData.accounts) {
-          const idMap = new Map();
-          masterData.accounts.forEach(a => idMap.set(a.id, a));
-          remoteData.accounts.forEach(a => { 
-            if(!idMap.has(a.id)) {
-              idMap.set(a.id, a);
-            } else {
-              // preserve recurring due config if remote has newer
-              const existing = idMap.get(a.id);
-              if(!existing.due_date && a.due_date) {
-                existing.due_date = a.due_date;
-                existing.due_type = a.due_type;
-                existing.due_recur = a.due_recur;
-                existing.due_custom_days = a.due_custom_days;
-              }
-            }
-          });
-          masterData.accounts = Array.from(idMap.values());
-          if(remoteData.payment_history && remoteData.payment_history.length > (masterData.payment_history || []).length) {
-            masterData.payment_history = remoteData.payment_history;
-          }
-        }
-      } else if(getRes.status === 404) {
-        lastErrMsg = `Repository '${currentRepo}' or '${cfg.file}' not found on branch '${cfg.branch}'.`;
-        continue;
+  try {
+    // 1. Fetch remote file metadata & latest data with anti-cache
+    const url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${cfg.file}?ref=${cfg.branch}&_t=${Date.now()}`;
+    
+    const getRes = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json'
       }
+    });
 
-      const putUrl = `https://api.github.com/repos/${cfg.user}/${currentRepo}/contents/${cfg.file}`;
-      const payload = btoa(unescape(encodeURIComponent(JSON.stringify(masterData, null, 2))));
+    let sha = null;
+    let remoteData = null;
 
-      const putRes = await fetch(putUrl, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: `Auto Sync SGM Vault [${new Date().toISOString().slice(0,16)}]`,
-          content: payload,
-          branch: cfg.branch,
-          sha: sha || undefined
-        })
-      });
+    if(getRes.ok) {
+      const fileObj = await getRes.json();
+      sha = fileObj.sha;
+      remoteData = JSON.parse(decodeURIComponent(escape(atob(fileObj.content))));
+    } else if(getRes.status === 404) {
+      throw new Error(`Repository '${cfg.repo}' or '${cfg.file}' not found on branch '${cfg.branch}'. Check Repo Config.`);
+    } else if(getRes.status === 401) {
+      throw new Error(`Invalid GitHub Token (401 Bad Credentials). Please re-check token.`);
+    } else {
+      const errJson = await getRes.json();
+      throw new Error(errJson.message || `Fetch failed (${getRes.status})`);
+    }
 
-      if(putRes.ok) {
+    // 2. PULL MODE (Runs on app unlock, manual sync, and background auto-poll):
+    if(!isPush) {
+      if(remoteData && remoteData.accounts) {
+        masterData.accounts = remoteData.accounts;
+        masterData.payment_history = remoteData.payment_history || [];
         localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
-        dot.className = 'pulse-dot';
-        txt.innerText = `Synced (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
         renderTabs();
         renderGrid();
         renderDueSummary();
         renderLedger();
-        success = true;
-        if(!isSilent) showToast("Cloud Synced Successfully!");
-        break;
-      } else {
-        const errJson = await putRes.json();
-        lastErrMsg = errJson.message || "Commit failed";
+        if(dot) dot.className = 'pulse-dot';
+        if(txt) txt.innerText = `Live (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
+        if(!isSilent) showToast("Cloud Data Pulled & Updated!");
       }
-    } catch(err) {
-      lastErrMsg = err.message;
+      return;
     }
-  }
 
-  if(!success) {
-    dot.className = 'pulse-dot err';
-    txt.innerText = 'Sync: Issue detected';
+    // 3. PUSH MODE (Runs on local edit, payment, add, delete, due date change):
+    masterData.last_sync = new Date().toISOString().slice(0, 10);
+    const putUrl = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${cfg.file}`;
+    const payload = btoa(unescape(encodeURIComponent(JSON.stringify(masterData, null, 2))));
+
+    const putRes = await fetch(putUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify({
+        message: `Auto Live Sync [${new Date().toISOString().slice(0,16)}]`,
+        content: payload,
+        branch: cfg.branch,
+        sha: sha || undefined
+      })
+    });
+
+    if(putRes.ok) {
+      localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+      if(dot) dot.className = 'pulse-dot';
+      if(txt) txt.innerText = `Live (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`;
+      if(!isSilent) showToast("Saved & Synced to Cloud!");
+    } else {
+      const putErr = await putRes.json();
+      if(putRes.status === 409) {
+        throw new Error("Cloud version conflict (409). Click 'Sync' to pull latest changes from other device.");
+      }
+      throw new Error(putErr.message || `Commit failed (${putRes.status})`);
+    }
+  } catch(err) {
+    if(dot) dot.className = 'pulse-dot err';
+    if(txt) txt.innerText = 'Sync: Disconnected';
     if(!isSilent) {
-      alert(`Cloud Sync Notice: ${lastErrMsg}\n\nTip: Click 'Repo Config' to verify your repo name and branch name.`);
+      alert(`Cloud Sync Notice: ${err.message}`);
     }
   }
 }
+
+// Seamless Background Live Poll every 30 seconds
+setInterval(() => {
+  const isAuth = (document.getElementById('mainApp') && document.getElementById('mainApp').style.display !== 'none');
+  if(isAuth) {
+    syncWithGitHub(true, false);
+  }
+}, 30000);
 
 // Backup & Export
 function exportBackup() {
@@ -1400,12 +1388,10 @@ function renderDueSummary() {
   const countBadge = document.getElementById('dueBadgeCount');
   if(!container) return;
 
-  // Extract all accounts with due dates and compute their upcoming timing
   const dueItems = [];
   (masterData.accounts || []).forEach(acc => {
     if(acc.due_date) {
       const details = computeDueDetails(acc);
-      // Skip completed one-time bills from active upcoming tracker
       if(details && !details.isPaidOneTime) {
         dueItems.push({
           account: acc,
@@ -1415,17 +1401,15 @@ function renderDueSummary() {
     }
   });
 
-  // Sort strictly DATE-WISE: closest date first
   dueItems.sort((a, b) => a.details.diffDays - b.details.diffDays);
 
-  // Filter based on 1 month (30 days), 3 months (90 days), or all
   const filtered = dueItems.filter(item => {
     if(dueTimelineFilter === '30') {
-      return item.details.diffDays <= 30; // Within 1 month
+      return item.details.diffDays <= 30;
     } else if(dueTimelineFilter === '90') {
-      return item.details.diffDays <= 90; // Within 3 months
+      return item.details.diffDays <= 90;
     }
-    return true; // All
+    return true;
   });
 
   countBadge.innerText = `${filtered.length} Active in Window`;
@@ -1478,7 +1462,7 @@ function renderDueSummary() {
         </div>
         <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
           <span class="due-chip ${chipClass}" style="margin:0; font-size:0.72rem; padding:3px 7px;" onclick="openDueDateModal('${escapeHtml(acc.id)}')">${chipText}</span>
-          <button class="btn-accent" style="padding:3px 8px; font-size:0.72rem; border-radius:5px;" onclick="openPayModal('${escapeHtml(acc.id)}')">Pay</button>
+          <button class="btn-accent" style="padding:3px 8px; font-size:0.72rem; border-radius:5px;" onclick="openPayModal('${escapeHtml(acc.person)} (${escapeHtml(acc.category)})', '${escapeHtml(acc.id)}')">Pay</button>
         </div>
       </div>
     `;
@@ -1490,7 +1474,7 @@ function renderDueSummary() {
 // ============================================================================
 function promptEditAccount(id) {
   const pin = prompt("🔐 Enter 4-Digit Security PIN to Edit Details:");
-  if (pin === null) return; // user cancelled
+  if (pin === null) return;
   if (pin.trim() !== "1441") {
     alert("❌ Incorrect PIN (1441)! Access Denied.");
     return;
@@ -1544,7 +1528,6 @@ async function saveEditedAccount() {
     acc.name = newName;
     acc.extra = newExtra;
 
-    // If Consumer ID changed, update references in payment history too
     if (origId !== newId && masterData.payment_history) {
       masterData.payment_history.forEach(log => {
         if (log.id === origId) log.id = newId;

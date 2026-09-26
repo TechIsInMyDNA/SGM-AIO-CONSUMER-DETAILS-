@@ -10,7 +10,9 @@
       "name": "SMTRADHABAI REWACHAND HARIRAMANI",
       "due_date": "2026-09-26",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-26",
+      "last_paid_amount": "1090"
     },
     {
       "category": "MSEB",
@@ -504,6 +506,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/9/2026, 10:07:01 am",
+      "target": "SUSHIL UNCLE (MSEB)",
+      "id": "430010420321",
+      "amount": "1090",
+      "mode": "Credit Card",
+      "notes": "HDFC BIZ GROW 7277/HGAMP17B180380873261"
+    },
     {
       "date": "26/9/2026, 10:05:40 am",
       "target": "SUSHIL UNCLE (MSEB)",

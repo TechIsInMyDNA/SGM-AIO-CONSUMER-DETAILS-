@@ -20,7 +20,9 @@
       "name": "SHRI REWACHAND BUDHARMAL HARIRAMANI",
       "due_date": "2026-09-26",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-26",
+      "last_paid_amount": "370"
     },
     {
       "category": "MSEB",
@@ -502,6 +504,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/9/2026, 10:05:40 am",
+      "target": "SUSHIL UNCLE (MSEB)",
+      "id": "430010126058",
+      "amount": "370",
+      "mode": "Credit Card",
+      "notes": "HDFC BIZ GROW 7277/HGAMP109110380862069"
+    },
     {
       "date": "26/9/2026, 9:58:12 am",
       "target": "MYSELF (MSEB)",

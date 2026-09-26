@@ -213,7 +213,9 @@
       "name": "SHRI MOTILAL B JAIN",
       "due_date": "2026-08-28",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-26",
+      "last_paid_amount": "2870"
     },
     {
       "category": "MSEB",
@@ -491,6 +493,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/9/2026, 9:58:12 am",
+      "target": "MYSELF (MSEB)",
+      "id": "430010243640",
+      "amount": "2870",
+      "mode": "Credit Card",
+      "notes": "Hdfc biz groww 7277/HGAMP15CFB0380811131"
+    },
     {
       "date": "24/9/2026, 3:23:50 pm",
       "target": "AMREE VI (MOBILE RCS)",

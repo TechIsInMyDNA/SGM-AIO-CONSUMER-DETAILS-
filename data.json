@@ -322,7 +322,9 @@
       "name": "RAWACHAND BUBHARMAL HARIRAMANI",
       "due_date": "2026-09-26",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-26",
+      "last_paid_amount": "010"
     },
     {
       "category": "LANDLINE",
@@ -516,6 +518,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/9/2026, 10:18:38 am",
+      "target": "SUSHIL UNCLE (LANDLINE)",
+      "id": "07182233939",
+      "amount": "010",
+      "mode": "Credit Card",
+      "notes": "No bill generated amt"
+    },
     {
       "date": "26/9/2026, 10:17:31 am",
       "target": "SUSHIL UNCLE (LANDLINE)",

@@ -3,6 +3,17 @@
   "last_sync": "2026-09-16",
   "accounts": [
     {
+      "category": "MOBILE RCS",
+      "person": "APPU BHIYA VI",
+      "id": "9604048500",
+      "name": "",
+      "extra": "",
+      "due_date": "2026-09-24",
+      "due_type": "recurring",
+      "due_recur": "custom",
+      "due_custom_days": 28
+    },
+    {
       "category": "MSEB",
       "person": "SUSHIL UNCLE",
       "id": "430010420321",
@@ -21,14 +32,14 @@
       "person": "SUSHIL UNCLE",
       "id": "430017316651",
       "extra": "BU: 1937",
-      "name": "SUSHILKUMAR REWACHAND HARIRAMANI"
+      "name": "SUSHILKUMAR REWACHAND HARIRAMANI CLOSED NOT TO PAY"
     },
     {
       "category": "MSEB",
       "person": "SUSHIL UNCLE",
       "id": "430040099926",
       "extra": "BU: 0390",
-      "name": "SHRI REWACHAND BUDHARMAL HARIRAMANI"
+      "name": "SHRI REWACHAND BUDHARMAL HARIRAMANI CLOSED NOT TO PAY"
     },
     {
       "category": "MSEB",
@@ -55,7 +66,9 @@
       "name": "SMT PUSHPADEVI CHANDRAKANT CHHITARKA",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-17",
+      "last_paid_amount": "3750"
     },
     {
       "category": "MSEB",
@@ -65,7 +78,9 @@
       "name": "SHRI CHANDRAKANT CHHAGANLAL AGRAWAL",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-09-17",
+      "last_paid_amount": "5530"
     },
     {
       "category": "MSEB",
@@ -93,7 +108,7 @@
       "person": "SANJU UNCLE",
       "id": "430010118268",
       "extra": "BU: 1937",
-      "name": "DR OMPRAKASH D TASHNIWAL"
+      "name": "DR OMPRAKASH D TASHNIWAL CLOSED NOT TO PAY"
     },
     {
       "category": "MSEB",
@@ -110,7 +125,7 @@
       "person": "SANJU UNCLE",
       "id": "430010038531",
       "extra": "BU: 1937",
-      "name": "SHRI D. NATHUBHAI"
+      "name": "SHRI D. NATHUBHAI CLOSED NOT TO PAY"
     },
     {
       "category": "MSEB",
@@ -201,7 +216,7 @@
       "id": "430010145699",
       "extra": "BU: 1937",
       "name": "THE CHIEF OFFICER M C",
-      "due_date": "2026-09-17",
+      "due_date": "2026-10-17",
       "due_type": "recurring",
       "due_recur": "monthly"
     },
@@ -213,9 +228,7 @@
       "name": "SHRI MOTILAL B JAIN",
       "due_date": "2026-08-28",
       "due_type": "recurring",
-      "due_recur": "monthly",
-      "last_paid_date": "2026-09-26",
-      "last_paid_amount": "2870"
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",
@@ -330,9 +343,7 @@
       "extra": "DOB: 26-Jun-1968",
       "due_date": "2026-09-21",
       "due_type": "recurring",
-      "due_recur": "quarterly",
-      "last_paid_date": "2026-09-20",
-      "last_paid_amount": "4900"
+      "due_recur": "quarterly"
     },
     {
       "category": "LIC",
@@ -372,9 +383,11 @@
     {
       "category": "WATER BILL",
       "person": "VIJAY MUNDRA",
-      "id": "102612075",
+      "id": "0102612075",
       "extra": "Municipal Council Gondia",
       "name": "VIJAYKUMAR R MUNDRA",
+      "last_paid_date": "2026-09-19",
+      "last_paid_amount": "430",
       "due_date": "2026-09-19",
       "due_type": "recurring",
       "due_recur": "monthly"
@@ -445,25 +458,12 @@
     {
       "category": "WATER BILL",
       "person": "VIJAY MUNDRA",
-      "id": "0102612075",
+      "id": "102612075",
       "extra": "Municipal Council Gondia",
       "name": "VIJAYKUMAR R MUNDRA",
-      "last_paid_date": "2026-09-19",
-      "last_paid_amount": "430",
       "due_date": "2026-09-19",
       "due_type": "recurring",
       "due_recur": "monthly"
-    },
-    {
-      "category": "MOBILE RCS",
-      "person": "APPU BHIYA VI",
-      "id": "9604048500",
-      "name": "",
-      "extra": "",
-      "due_date": "2026-09-24",
-      "due_type": "recurring",
-      "due_recur": "custom",
-      "due_custom_days": 28
     },
     {
       "category": "MOBILE RCS",

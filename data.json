@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-09-26",
+  "last_sync": "2026-09-29",
   "accounts": [
     {
       "category": "DTH",
@@ -289,7 +289,10 @@
       "person": "PANPALIYA",
       "id": "430010200479",
       "extra": "BU: 1937",
-      "name": "SHRI SUBHASHCHANDRAJI PANPALIYA"
+      "name": "SHRI SUBHASHCHANDRAJI PANPALIYA",
+      "due_date": "2026-09-28",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

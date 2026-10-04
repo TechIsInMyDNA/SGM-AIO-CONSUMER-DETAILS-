@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-09-29",
+  "last_sync": "2026-10-04",
   "accounts": [
     {
       "category": "DTH",
@@ -431,7 +431,10 @@
       "person": "SANJU UNCLE",
       "id": "0102603082",
       "extra": "Municipal Council Gondia",
-      "name": "G D ASHTIKAR"
+      "name": "G D ASHTIKAR",
+      "due_date": "2026-10-11",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "WATER BILL",

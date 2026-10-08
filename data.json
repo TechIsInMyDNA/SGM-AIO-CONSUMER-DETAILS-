@@ -1,7 +1,17 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-04",
+  "last_sync": "2026-10-08",
   "accounts": [
+    {
+      "category": "MSEB",
+      "person": "PAPPU CHHITARKA",
+      "id": "430010149121",
+      "name": "SHRI CHANDRAKANT C CHITARKA",
+      "extra": "1937",
+      "due_date": "2026-10-17",
+      "due_type": "recurring",
+      "due_recur": "monthly"
+    },
     {
       "category": "DTH",
       "person": "AMREE TATA SKY",

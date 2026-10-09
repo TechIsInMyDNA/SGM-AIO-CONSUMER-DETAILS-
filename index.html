@@ -52,7 +52,7 @@
   .auth-wrapper { max-width: 440px; margin: 70px auto; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 32px 26px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); backdrop-filter: blur(16px); }
   .auth-shield { width: 56px; height: 56px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--border-light); border-radius: 16px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
   .pin-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 22px 0 16px; }
-  .pin-box { text-align: center; font-size: 1.25rem; font-weight: 700; letter-spacing: 2px; padding: 12px; font-family: 'JetBrains Mono', monospace; background: #091120; border: 1px solid var(--border); border-radius: 12px; }
+  .pin-box { text-align: center; font-size: 1.35rem; font-weight: 700; letter-spacing: 2px; padding: 12px; font-family: 'JetBrains Mono', monospace; background: #091120; border: 1px solid var(--border); border-radius: 12px; }
 
   /* Navigation Tabs */
   .tabs-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 14px; scrollbar-width: none; }
@@ -141,9 +141,9 @@
     <p style="color:var(--text-muted); font-size:0.82rem; margin-top:4px;">Enter 3-Split PIN to Decrypt Session</p>
     
     <div class="pin-grid">
-      <input type="password" id="p1" class="pin-box" maxlength="4" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(1)">
-      <input type="password" id="p2" class="pin-box" maxlength="4" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(2)">
-      <input type="password" id="p3" class="pin-box" maxlength="4" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(3)">
+      <input type="password" id="p1" class="pin-box" maxlength="2" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(1)" onkeyup="handlePinKeyUp(event, 1)">
+      <input type="password" id="p2" class="pin-box" maxlength="2" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(2)" onkeyup="handlePinKeyUp(event, 2)">
+      <input type="password" id="p3" class="pin-box" maxlength="2" placeholder="••" autocomplete="off" oninput="handlePinAutoAdvance(3)" onkeyup="handlePinKeyUp(event, 3)">
     </div>
     
     <button class="btn-primary" style="width:100%; justify-content:center; padding:11px;" onclick="unlockApp()">
@@ -532,7 +532,7 @@
    CONFIG & BOT-PROTECTION ARCHITECTURE:
    ========================================================================== */
 
-// 1. 3-SPLIT UNLOCK PIN (Easy to enter: Auto-focus jumps from box 1 to 2 to 3)
+// 1. 3-SPLIT UNLOCK PIN (Auto-advance jumps smoothly)
 const PIN_1 = "23";
 const PIN_2 = "32";
 const PIN_3 = "45";
@@ -586,16 +586,47 @@ let activeCategory = "ALL";
 let currentPayTarget = null;
 let currentDueTargetId = null;
 let currentEditLogIndex = null;
+let isSyncing = false;
 
-// Auto-advance PIN input boxes smoothly
+// Bulletproof PIN auto-advance (oninput + onkeyup + 6-digit paste handler)
 function handlePinAutoAdvance(num) {
   const el = document.getElementById('p' + num);
-  if(el.value.length >= 2) {
-    if(num < 3) {
-      document.getElementById('p' + (num + 1)).focus();
+  if (!el) return;
+
+  // Direct paste handler: If user pastes 6 digits in box 1
+  if (num === 1 && el.value.length >= 6) {
+    const val = el.value.trim();
+    document.getElementById('p1').value = val.slice(0, 2);
+    document.getElementById('p2').value = val.slice(2, 4);
+    document.getElementById('p3').value = val.slice(4, 6);
+    unlockApp();
+    return;
+  }
+
+  if (el.value.length >= 2) {
+    if (num < 3) {
+      const next = document.getElementById('p' + (num + 1));
+      if (next) {
+        next.focus();
+        next.select();
+      }
     } else {
       unlockApp();
     }
+  }
+}
+
+function handlePinKeyUp(e, num) {
+  if (e.key === 'Backspace' && num > 1) {
+    const el = document.getElementById('p' + num);
+    if (el && el.value.length === 0) {
+      const prev = document.getElementById('p' + (num - 1));
+      if (prev) prev.focus();
+    }
+  } else if (e.key === 'Enter') {
+    unlockApp();
+  } else {
+    handlePinAutoAdvance(num);
   }
 }
 
@@ -609,10 +640,16 @@ async function unlockApp() {
     return;
   }
 
-  // Load from local storage or data.json
+  document.getElementById('authErr').innerText = "";
+
+  // Load from local storage or data.json safely
   const cached = localStorage.getItem('sgm_local_data');
   if(cached) {
-    masterData = JSON.parse(cached);
+    try {
+      masterData = JSON.parse(cached);
+    } catch(e) {
+      masterData = { accounts: [], payment_history: [] };
+    }
   } else {
     try {
       const cfg = getAutoRepoInfo();
@@ -629,10 +666,10 @@ async function unlockApp() {
   document.getElementById('authScreen').style.display = 'none';
   document.getElementById('mainApp').style.display = 'block';
 
-  renderTabs();
-  renderGrid();
-  renderDueSummary();
-  renderLedger();
+  try { renderTabs(); } catch(e) { console.error(e); }
+  try { renderGrid(); } catch(e) { console.error(e); }
+  try { renderDueSummary(); } catch(e) { console.error(e); }
+  try { renderLedger(); } catch(e) { console.error(e); }
 
   // Background silent live sync on unlock
   syncWithGitHub(true, false);
@@ -644,7 +681,7 @@ function lockApp() {
 
 // Category Tabs
 function renderTabs() {
-  const cats = ['ALL', ...new Set((masterData.accounts || []).map(a => a.category).filter(Boolean))];
+  const cats = ['ALL', ...new Set((masterData.accounts || []).map(a => a && a.category).filter(Boolean))];
   document.getElementById('categoryTabs').innerHTML = cats.map(c => `
     <div class="tab-pill ${c === activeCategory ? 'active' : ''}" onclick="selectCategory('${c}')">${c}</div>
   `).join('');
@@ -672,11 +709,12 @@ function advanceDateByCycle(targetDate, recurFreq, customDays, origDay) {
   } else if (recurFreq === 'quarterly') {
     targetDate.setMonth(targetDate.getMonth() + 3);
   } else if (recurFreq === 'custom') {
-    targetDate.setDate(targetDate.getDate() + customDays);
+    targetDate.setDate(targetDate.getDate() + (customDays > 0 ? customDays : 30));
   }
 }
 
 function getAccountLastPaidDate(acc) {
+  if (!acc) return null;
   if (acc.last_paid_date) {
     const d = new Date(acc.last_paid_date);
     if (!isNaN(d.getTime())) {
@@ -686,9 +724,9 @@ function getAccountLastPaidDate(acc) {
   }
   if (masterData.payment_history && masterData.payment_history.length > 0) {
     for (const log of masterData.payment_history) {
-      if (log.id === acc.id) {
+      if (log && log.id === acc.id) {
         if (log.date) {
-          const parts = log.date.split(',')[0].trim();
+          const parts = String(log.date).split(',')[0].trim();
           let d;
           if (parts.includes('/')) {
             const dp = parts.split('/');
@@ -708,16 +746,16 @@ function getAccountLastPaidDate(acc) {
 }
 
 // ============================================================================
-// DYNAMIC RECURRING DUE DATE ENGINE: Computes next occurrence and left days
-// Automatically detects if paid for current cycle & advances to next cycle!
+// DYNAMIC RECURRING DUE DATE ENGINE (With Infinite Loop & RangeError Safety)
 // ============================================================================
 function computeDueDetails(acc) {
-  if(!acc.due_date) return null;
+  if(!acc || !acc.due_date) return null;
 
   const today = new Date();
   today.setHours(0,0,0,0);
 
   let targetDate = new Date(acc.due_date);
+  if (isNaN(targetDate.getTime())) return null;
   targetDate.setHours(0,0,0,0);
 
   const origDay = new Date(acc.due_date).getDate();
@@ -730,12 +768,16 @@ function computeDueDetails(acc) {
   let cyclePaid = false;
 
   if (isRecurring) {
-    while (targetDate < today) {
+    let safety1 = 0;
+    while (targetDate < today && safety1 < 1000) {
       advanceDateByCycle(targetDate, recurFreq, customDays, origDay);
+      safety1++;
     }
     if (lastPaidDate && (lastPaidDate >= targetDate || (lastPaidDate.getTime() === today.getTime() && targetDate.getTime() === today.getTime()))) {
-      while (targetDate <= lastPaidDate) {
+      let safety2 = 0;
+      while (targetDate <= lastPaidDate && safety2 < 1000) {
         advanceDateByCycle(targetDate, recurFreq, customDays, origDay);
+        safety2++;
       }
       cyclePaid = true;
     }
@@ -747,7 +789,12 @@ function computeDueDetails(acc) {
 
   const diffMs = targetDate - today;
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-  const dateString = targetDate.toISOString().slice(0, 10);
+  let dateString = '';
+  try {
+    dateString = targetDate.toISOString().slice(0, 10);
+  } catch(e) {
+    dateString = String(acc.due_date);
+  }
 
   return {
     isRecurring: isRecurring,
@@ -757,7 +804,7 @@ function computeDueDetails(acc) {
     diffDays: diffDays,
     cyclePaid: cyclePaid,
     isPaidOneTime: isPaidOneTime,
-    lastPaidStr: lastPaidDate ? lastPaidDate.toISOString().slice(0, 10) : null
+    lastPaidStr: (lastPaidDate && !isNaN(lastPaidDate.getTime())) ? lastPaidDate.toISOString().slice(0, 10) : null
   };
 }
 
@@ -814,12 +861,13 @@ function getDueDateBadge(acc) {
   </div>`;
 }
 
-// Cards Grid with PIN 1441 Edit Details
+// Cards Grid with PIN 1441 Edit Details Button
 function renderGrid() {
   const q = document.getElementById('searchBox').value.toLowerCase();
   const grid = document.getElementById('cardsGrid');
 
   const list = (masterData.accounts || []).filter(item => {
+    if (!item) return false;
     const matchCat = activeCategory === 'ALL' || item.category === activeCategory;
     const matchQ = (item.id || '').toLowerCase().includes(q) ||
                    (item.person || '').toLowerCase().includes(q) ||
@@ -885,9 +933,7 @@ function showToast(msg) {
   setTimeout(() => t.style.display = 'none', 1800);
 }
 
-// ============================================================================
-// MODAL CONTROLS: DUE DATE MODAL (One-Time vs Recurring)
-// ============================================================================
+// Due Date Modal
 function switchCardDueType(type) {
   document.getElementById('lblCardOneTime').className = (type === 'one_time' ? 'active' : '');
   document.getElementById('lblCardRecurring').className = (type === 'recurring' ? 'active' : '');
@@ -904,7 +950,7 @@ function handleCardFreqChange() {
 
 function openDueDateModal(id) {
   currentDueTargetId = id;
-  const acc = masterData.accounts.find(a => a.id === id);
+  const acc = masterData.accounts.find(a => a && a.id === id);
   if(!acc) return;
 
   document.getElementById('dueDateTarget').value = `${acc.person} - [${acc.id}]`;
@@ -929,7 +975,7 @@ function closeDueDateModal() {
 }
 
 async function saveCardDueDate() {
-  const acc = masterData.accounts.find(a => a.id === currentDueTargetId);
+  const acc = masterData.accounts.find(a => a && a.id === currentDueTargetId);
   if(!acc) return;
 
   const dateVal = document.getElementById('cardDueDateVal').value;
@@ -961,7 +1007,7 @@ async function saveCardDueDate() {
 }
 
 async function removeCardDueDate() {
-  const acc = masterData.accounts.find(a => a.id === currentDueTargetId);
+  const acc = masterData.accounts.find(a => a && a.id === currentDueTargetId);
   if(acc) {
     delete acc.due_date;
     delete acc.due_type;
@@ -976,9 +1022,7 @@ async function removeCardDueDate() {
   }
 }
 
-// ============================================================================
-// MODAL CONTROLS: ADD NEW MODAL (One-Time vs Recurring)
-// ============================================================================
+// Add New Modal
 function switchAddDueType(type) {
   document.getElementById('lblAddOneTime').className = (type === 'one_time' ? 'active' : '');
   document.getElementById('lblAddRecurring').className = (type === 'recurring' ? 'active' : '');
@@ -1052,14 +1096,14 @@ async function saveNewEntry() {
   await syncWithGitHub(false, true);
 }
 
-// Payment Logging
+// Payment Logging Modal
 function openPayModal(target, id) {
   if (!id && target) {
     id = target;
-    const acc = (masterData.accounts || []).find(a => String(a.id).trim() === String(id).trim());
+    const acc = (masterData.accounts || []).find(a => a && String(a.id).trim() === String(id).trim());
     target = acc ? `${acc.person} (${acc.category})` : id;
   }
-  const acc = (masterData.accounts || []).find(a => String(a.id).trim() === String(id).trim());
+  const acc = (masterData.accounts || []).find(a => a && String(a.id).trim() === String(id).trim());
   const displayTitle = acc ? `${acc.person} (${acc.category})` : (target || id);
   currentPayTarget = { target: displayTitle, id: id };
   
@@ -1098,8 +1142,7 @@ async function savePayment() {
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
-  // Auto-mark account as paid today so recurring cycle instantly advances to next date
-  const targetAcc = (masterData.accounts || []).find(a => a.id === currentPayTarget.id);
+  const targetAcc = (masterData.accounts || []).find(a => a && a.id === currentPayTarget.id);
   if (targetAcc) {
     targetAcc.last_paid_date = todayStr;
     targetAcc.last_paid_amount = amount;
@@ -1132,7 +1175,9 @@ function renderLedger() {
     body.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:18px;">No bill payments logged yet.</td></tr>`;
     return;
   }
-  body.innerHTML = logs.map((l, idx) => `
+  body.innerHTML = logs.map((l, idx) => {
+    if(!l) return '';
+    return `
     <tr>
       <td style="color:var(--text-muted); font-size:0.75rem;">${escapeHtml(l.date)}</td>
       <td><strong>${escapeHtml(l.target)}</strong></td>
@@ -1153,7 +1198,8 @@ function renderLedger() {
         </div>
       </td>
     </tr>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // Generate Dashing & Sober WhatsApp Receipt for SGM ONLINE WORKS
@@ -1239,7 +1285,7 @@ function clearLedger() {
 
 async function deleteEntry(id) {
   if(confirm(`Delete ID: ${id}?`)) {
-    masterData.accounts = masterData.accounts.filter(a => a.id !== id);
+    masterData.accounts = masterData.accounts.filter(a => a && a.id !== id);
     localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
     renderGrid();
     renderDueSummary();
@@ -1272,7 +1318,7 @@ function saveRepoConfig() {
   localStorage.setItem('sgm_repo_cfg', JSON.stringify(cfg));
   closeRepoConfig();
   showToast("Repo Config Saved!");
-  syncWithGitHub(false);
+  syncWithGitHub(false, false);
 }
 
 // Robust GitHub 2-Way Seamless Live Sync Engine
@@ -1396,7 +1442,9 @@ function exportCSV() {
   if(!logs.length) return alert("No payment history to export.");
   let csv = "Date_Time,Account_Title,Consumer_ID,Amount_INR,Paid_Via,Remarks\n";
   logs.forEach(l => {
-    csv += `"${l.date}","${l.target}","${l.id}","${l.amount}","${l.mode}","${l.notes}"\n`;
+    if(l) {
+      csv += `"${l.date}","${l.target}","${l.id}","${l.amount}","${l.mode}","${l.notes}"\n`;
+    }
   });
   downloadFile(csv, `SGM_Bills_Paid_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
 }
@@ -1430,10 +1478,162 @@ function renderDueSummary() {
   const countBadge = document.getElementById('dueBadgeCount');
   if(!container) return;
 
-  // Extract all accounts with due dates and compute their upcoming timing
   const dueItems = [];
   (masterData.accounts || []).forEach(acc => {
+    if(!acc) return;
     if(acc.due_date) {
       const details = computeDueDetails(acc);
-      // Skip completed one-time bills from active upcoming tracker
+      if(details && !details.isPaidOneTime) {
+        dueItems.push({
+          account: acc,
+          details: details
+        });
+      }
+    }
+  });
+
+  dueItems.sort((a, b) => a.details.diffDays - b.details.diffDays);
+
+  const filtered = dueItems.filter(item => {
+    if(dueTimelineFilter === '30') {
+      return item.details.diffDays <= 30;
+    } else if(dueTimelineFilter === '90') {
+      return item.details.diffDays <= 90;
+    }
+    return true;
+  });
+
+  countBadge.innerText = `${filtered.length} Active in Window`;
+
+  if(!filtered.length) {
+    container.innerHTML = `
+      <div style="grid-column: 1/-1; text-align:center; padding:18px; color:var(--text-muted); font-size:0.83rem;">
+        No pending bills due within this timeline. Click <strong>'+ Set Due Date'</strong> on any card to track!
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => {
+    const acc = item.account;
+    const d = item.details;
     
+    let chipClass = 'good';
+    let chipText = '';
+
+    if (d.isRecurring && d.cyclePaid) {
+      chipClass = 'good';
+      chipText = `✅ Next: ${d.diffDays}d left (${d.nextDate})`;
+    } else if(d.diffDays < 0) {
+      chipClass = 'urgent';
+      chipText = `⚠️ Overdue (${Math.abs(d.diffDays)}d)`;
+    } else if(d.diffDays === 0) {
+      chipClass = 'urgent';
+      chipText = `🚨 Due Today!`;
+    } else if(d.diffDays === 1) {
+      chipClass = 'warning';
+      chipText = `⏳ 1 Day Left`;
+    } else if(d.diffDays <= 4) {
+      chipClass = 'warning';
+      chipText = `⏳ ${d.diffDays} Days Left`;
+    } else {
+      chipClass = 'good';
+      chipText = `📅 ${d.diffDays} Days Left`;
+    }
+
+    return `
+      <div class="due-item">
+        <div class="due-item-info">
+          <div class="due-item-person">${escapeHtml(acc.person)} <span style="font-size:0.72rem; color:var(--primary); font-weight:normal;">[${escapeHtml(acc.category)}]</span></div>
+          <div class="due-item-meta">
+            <span style="font-family:'JetBrains Mono';">${escapeHtml(acc.id)}</span>
+            <span>•</span>
+            <span style="color:#fff; font-weight:600;">${d.nextDate}</span>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
+          <span class="due-chip ${chipClass}" style="margin:0; font-size:0.72rem; padding:3px 7px;" onclick="openDueDateModal('${escapeHtml(acc.id)}')">${chipText}</span>
+          <button class="btn-accent" style="padding:3px 8px; font-size:0.72rem; border-radius:5px;" onclick="openPayModal('${escapeHtml(acc.person)} (${escapeHtml(acc.category)})', '${escapeHtml(acc.id)}')">Pay</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================================
+// PIN-PROTECTED ACCOUNT DETAILS EDITING (PIN: 1441)
+// ============================================================================
+function promptEditAccount(id) {
+  const pin = prompt("🔐 Enter 4-Digit Security PIN to Edit Details:");
+  if (pin === null) return;
+  if (pin.trim() !== "1441") {
+    alert("❌ Incorrect PIN (1441)! Access Denied.");
+    return;
+  }
+  openEditAccountModal(id);
+}
+
+function openEditAccountModal(id) {
+  const acc = (masterData.accounts || []).find(a => a && String(a.id).trim() === String(id).trim());
+  if (!acc) return;
+  document.getElementById('editOriginalId').value = acc.id;
+  document.getElementById('editAccCategory').value = acc.category || '';
+  document.getElementById('editAccPerson').value = acc.person || '';
+  document.getElementById('editAccId').value = acc.id || '';
+  document.getElementById('editAccName').value = acc.name || '';
+  document.getElementById('editAccExtra').value = acc.extra || '';
+
+  const modal = document.getElementById('editAccountModal');
+  if (modal) {
+    modal.classList.add('open');
+    modal.style.display = 'flex';
+  }
+}
+
+function closeEditAccountModal() {
+  const modal = document.getElementById('editAccountModal');
+  if (modal) {
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+  }
+}
+
+async function saveEditedAccount() {
+  const origId = document.getElementById('editOriginalId').value;
+  const newCategory = document.getElementById('editAccCategory').value.trim().toUpperCase();
+  const newPerson = document.getElementById('editAccPerson').value.trim().toUpperCase();
+  const newId = document.getElementById('editAccId').value.trim();
+  const newName = document.getElementById('editAccName').value.trim().toUpperCase();
+  const newExtra = document.getElementById('editAccExtra').value.trim();
+
+  if (!newCategory || !newPerson || !newId) {
+    alert("Category, Person Name, and Consumer ID are required!");
+    return;
+  }
+
+  const acc = (masterData.accounts || []).find(a => a && String(a.id).trim() === String(origId).trim());
+  if (acc) {
+    acc.category = newCategory;
+    acc.person = newPerson;
+    acc.id = newId;
+    acc.name = newName;
+    acc.extra = newExtra;
+
+    if (origId !== newId && masterData.payment_history) {
+      masterData.payment_history.forEach(log => {
+        if (log && log.id === origId) log.id = newId;
+      });
+    }
+
+    localStorage.setItem('sgm_local_data', JSON.stringify(masterData));
+    closeEditAccountModal();
+    renderTabs();
+    renderGrid();
+    renderDueSummary();
+    showToast("Account Details Updated & Synced!");
+    await syncWithGitHub(false, true);
+  }
+}
+</script>
+</body>
+</html>

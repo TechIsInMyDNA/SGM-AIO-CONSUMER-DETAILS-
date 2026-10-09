@@ -22,7 +22,9 @@
       "extra": "1937",
       "due_date": "2026-10-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-09",
+      "last_paid_amount": "5440"
     },
     {
       "category": "DTH",
@@ -558,6 +560,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "9/10/2026, 8:40:54 pm",
+      "target": "PAPPU CHHITARKA (MSEB)",
+      "id": "430010149121",
+      "amount": "5440",
+      "mode": "Credit Card",
+      "notes": "Hdfc biz 7277/HD016282BAMAAAEN740E"
+    },
     {
       "date": "9/10/2026, 8:39:21 pm",
       "target": "PAPPU CHHITARKA (MSEB)",

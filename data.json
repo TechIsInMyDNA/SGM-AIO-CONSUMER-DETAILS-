@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-09",
+  "last_sync": "2026-10-13",
   "accounts": [
     {
       "category": "MSEB",
@@ -135,7 +135,9 @@
       "person": "SANJU UNCLE",
       "id": "430010145648",
       "extra": "BU: 1937",
-      "name": "THE CHIEF OFFICER M.C."
+      "name": "THE CHIEF OFFICER M.C.",
+      "last_paid_date": "2026-10-13",
+      "last_paid_amount": "1920"
     },
     {
       "category": "MSEB",
@@ -560,6 +562,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "13/10/2026, 2:25:54 pm",
+      "target": "SANJU UNCLE (MSEB)",
+      "id": "430010145648",
+      "amount": "1920",
+      "mode": "Credit Card",
+      "notes": "AXIS CC/HGAMP071040492303180"
+    },
     {
       "date": "9/10/2026, 8:40:54 pm",
       "target": "PAPPU CHHITARKA (MSEB)",

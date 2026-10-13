@@ -181,7 +181,10 @@
       "person": "SANJU UNCLE",
       "id": "430014490838",
       "extra": "BU: 1937",
-      "name": "VARSHA SANJAY BHAGDEV"
+      "name": "VARSHA SANJAY BHAGDEV",
+      "due_date": "2026-10-28",
+      "due_type": "recurring",
+      "due_recur": "monthly"
     },
     {
       "category": "MSEB",

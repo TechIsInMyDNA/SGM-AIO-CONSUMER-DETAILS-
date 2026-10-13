@@ -184,7 +184,9 @@
       "name": "VARSHA SANJAY BHAGDEV",
       "due_date": "2026-10-28",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-13",
+      "last_paid_amount": "910"
     },
     {
       "category": "MSEB",
@@ -568,6 +570,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "13/10/2026, 2:42:42 pm",
+      "target": "SANJU UNCLE (MSEB)",
+      "id": "430014490838",
+      "amount": "910",
+      "mode": "Credit Card",
+      "notes": "AXIS CC/HGAMP011C50492395693"
+    },
     {
       "date": "13/10/2026, 2:25:54 pm",
       "target": "SANJU UNCLE (MSEB)",

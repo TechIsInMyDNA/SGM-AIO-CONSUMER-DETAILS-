@@ -157,7 +157,9 @@
       "name": "SANJAYKUMAR GIRISHBHAI BHAGDEO",
       "due_date": "2026-09-21",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-16",
+      "last_paid_amount": "1560"
     },
     {
       "category": "MSEB",
@@ -572,6 +574,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/10/2026, 1:38:55 pm",
+      "target": "SANJU UNCLE (MSEB)",
+      "id": "430017373409",
+      "amount": "1560",
+      "mode": "Credit Card",
+      "notes": "AXIS CC/HGAMP14B6E0511053127"
+    },
     {
       "date": "16/10/2026, 1:28:10 pm",
       "target": "SANJU UNCLE (MSEB)",

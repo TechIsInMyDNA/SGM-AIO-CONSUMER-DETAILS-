@@ -338,7 +338,9 @@
       "person": "SUMIT MISHRA",
       "id": "430010137718",
       "extra": "BU: 1937",
-      "name": "MISS ELEZABATH D BAGHELE"
+      "name": "MISS ELEZABATH D BAGHELE",
+      "last_paid_date": "2026-10-16",
+      "last_paid_amount": "240"
     },
     {
       "category": "MSEB",
@@ -592,6 +594,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/10/2026, 5:19:50 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430010137718",
+      "amount": "240",
+      "mode": "Credit Card",
+      "notes": "AMZN/CC/AZ016289171906DKCfZc"
+    },
     {
       "date": "16/10/2026, 5:15:39 pm",
       "target": "SUMIT MISHRA (MSEB)",

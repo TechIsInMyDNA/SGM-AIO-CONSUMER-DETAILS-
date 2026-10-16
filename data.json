@@ -311,7 +311,9 @@
       "person": "SUMIT MISHRA",
       "id": "430011467517",
       "extra": "BU: 1937",
-      "name": "HIRA JAWAHAR MISHRA"
+      "name": "HIRA JAWAHAR MISHRA",
+      "last_paid_date": "2026-10-16",
+      "last_paid_amount": "550"
     },
     {
       "category": "MSEB",
@@ -586,6 +588,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/10/2026, 5:08:34 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430011467517",
+      "amount": "550",
+      "mode": "Credit Card",
+      "notes": "AXIS CC/HGAMP179..."
+    },
     {
       "date": "16/10/2026, 1:44:16 pm",
       "target": "SANJU UNCLE (MSEB)",

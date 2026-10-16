@@ -10,7 +10,9 @@
       "extra": "1937",
       "due_date": "2026-10-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-16",
+      "last_paid_amount": "6940"
     },
     {
       "category": "MSEB",
@@ -594,6 +596,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/10/2026, 5:22:14 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430010087893",
+      "amount": "6940",
+      "mode": "Credit Card",
+      "notes": "AXIS CC/1792150552Cm/161026"
+    },
     {
       "date": "16/10/2026, 5:19:50 pm",
       "target": "SUMIT MISHRA (MSEB)",

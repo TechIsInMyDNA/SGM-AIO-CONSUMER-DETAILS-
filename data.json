@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-16",
+  "last_sync": "2026-10-17",
   "accounts": [
     {
       "category": "MSEB",
@@ -280,7 +280,9 @@
       "name": "THE CHIEF OFFICER M C",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-17",
+      "last_paid_amount": "2490"
     },
     {
       "category": "MSEB",
@@ -596,6 +598,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "17/10/2026, 9:45:27 am",
+      "target": "MYSELF (MSEB)",
+      "id": "430010145699",
+      "amount": "2490",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/4569635773139"
+    },
     {
       "date": "16/10/2026, 5:22:14 pm",
       "target": "SUMIT MISHRA (MSEB)",

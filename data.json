@@ -4,6 +4,16 @@
   "accounts": [
     {
       "category": "MSEB",
+      "person": "VIJAY MUNDRA",
+      "id": "430010202889",
+      "name": "SMT. KALATI DHYANCHAND DEMBANI",
+      "extra": "1937",
+      "due_date": "2026-10-19",
+      "due_type": "recurring",
+      "due_recur": "monthly"
+    },
+    {
+      "category": "MSEB",
       "person": "SUMIT MISHRA",
       "id": "430010087893",
       "name": "JAWAHARLAL MISHRA",

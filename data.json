@@ -10,7 +10,9 @@
       "extra": "1937",
       "due_date": "2026-10-19",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-17",
+      "last_paid_amount": "1280"
     },
     {
       "category": "MSEB",
@@ -610,6 +612,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "17/10/2026, 8:35:05 pm",
+      "target": "VIJAY MUNDRA (MSEB)",
+      "id": "430010202889",
+      "amount": "1280",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/Tea98681b573844668942537c29407edb"
+    },
     {
       "date": "17/10/2026, 7:20:50 pm",
       "target": "ASHWIN UNCLE (MSEB)",

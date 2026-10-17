@@ -106,7 +106,9 @@
       "name": "ASWINKUMAR CHANDRAKANT CHITARKA AGRAWAL",
       "due_date": "2026-09-15",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-17",
+      "last_paid_amount": "870"
     },
     {
       "category": "MSEB",
@@ -598,6 +600,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "17/10/2026, 7:20:50 pm",
+      "target": "ASHWIN UNCLE (MSEB)",
+      "id": "430017341264",
+      "amount": "870",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/6455234459327"
+    },
     {
       "date": "17/10/2026, 9:45:27 am",
       "target": "MYSELF (MSEB)",

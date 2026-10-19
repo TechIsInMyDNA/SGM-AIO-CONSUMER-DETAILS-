@@ -142,7 +142,9 @@
       "name": "SHRI CHANDRAKANT CHHAGANLAL AGRAWAL",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-19",
+      "last_paid_amount": "5260"
     },
     {
       "category": "MSEB",
@@ -614,6 +616,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "19/10/2026, 3:43:53 pm",
+      "target": "ASHWIN UNCLE (MSEB)",
+      "id": "430010161597",
+      "amount": "5260",
+      "mode": "Credit Card",
+      "notes": "RBL CC 1508/RB066292BAMAAAACLRN8"
+    },
     {
       "date": "19/10/2026, 3:42:03 pm",
       "target": "ASHWIN UNCLE (MSEB)",

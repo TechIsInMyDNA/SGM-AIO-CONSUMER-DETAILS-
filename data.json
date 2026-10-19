@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-17",
+  "last_sync": "2026-10-19",
   "accounts": [
     {
       "category": "MSEB",
@@ -130,7 +130,9 @@
       "name": "SMT PUSHPADEVI CHANDRAKANT CHHITARKA",
       "due_date": "2026-09-17",
       "due_type": "recurring",
-      "due_recur": "monthly"
+      "due_recur": "monthly",
+      "last_paid_date": "2026-10-19",
+      "last_paid_amount": "3490"
     },
     {
       "category": "MSEB",
@@ -612,6 +614,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "19/10/2026, 3:42:03 pm",
+      "target": "ASHWIN UNCLE (MSEB)",
+      "id": "430010202111",
+      "amount": "3490",
+      "mode": "Credit Card",
+      "notes": "RBL CC 1508/BP-MB-CC727892846-MSED"
+    },
     {
       "date": "17/10/2026, 8:35:05 pm",
       "target": "VIJAY MUNDRA (MSEB)",

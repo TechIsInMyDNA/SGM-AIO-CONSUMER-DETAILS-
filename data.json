@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-19",
+  "last_sync": "2026-10-20",
   "accounts": [
     {
       "category": "MSEB",
@@ -521,7 +521,9 @@
       "person": "MYSELF",
       "id": "102612581",
       "extra": "Municipal Council Gondia",
-      "name": "SURESHKUMAR R AGRAWAL"
+      "name": "SURESHKUMAR R AGRAWAL",
+      "last_paid_date": "2026-10-20",
+      "last_paid_amount": "900"
     },
     {
       "category": "WATER BILL",
@@ -616,6 +618,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "20/10/2026, 5:23:06 pm",
+      "target": "MYSELF (WATER BILL)",
+      "id": "102612581",
+      "amount": "900",
+      "mode": "Paytm (UPI)",
+      "notes": "PYTM/UPI/UICA/218545440034"
+    },
     {
       "date": "19/10/2026, 3:43:53 pm",
       "target": "ASHWIN UNCLE (MSEB)",

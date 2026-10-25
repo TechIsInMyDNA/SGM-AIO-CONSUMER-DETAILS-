@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-20",
+  "last_sync": "2026-10-25",
   "accounts": [
     {
       "category": "MSEB",
@@ -158,7 +158,9 @@
       "person": "PAYAL JEWELLERS",
       "id": "430011429372",
       "extra": "BU: 1937",
-      "name": "SUSHIL CHANDRAKANT CHHITARKA"
+      "name": "SUSHIL CHANDRAKANT CHHITARKA",
+      "last_paid_date": "2026-10-25",
+      "last_paid_amount": "6640"
     },
     {
       "category": "MSEB",
@@ -618,6 +620,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "25/10/2026, 8:00:43 pm",
+      "target": "PAYAL JEWELLERS (MSEB)",
+      "id": "430011429372",
+      "amount": "6640",
+      "mode": "Credit Card",
+      "notes": "Hdfc 7277/HGAMP0888F0565200732"
+    },
     {
       "date": "20/10/2026, 5:23:06 pm",
       "target": "MYSELF (WATER BILL)",

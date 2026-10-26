@@ -81,8 +81,8 @@
       "due_date": "2026-09-26",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-09-26",
-      "last_paid_amount": "370"
+      "last_paid_date": "2026-10-26",
+      "last_paid_amount": "340"
     },
     {
       "category": "MSEB",
@@ -620,6 +620,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/10/2026, 5:35:45 pm",
+      "target": "SUSHIL UNCLE (MSEB)",
+      "id": "430010126058",
+      "amount": "340",
+      "mode": "Credit Card",
+      "notes": "HDFC 7277/HGAMP1278E0570231284"
+    },
     {
       "date": "26/10/2026, 5:31:45 pm",
       "target": "SUSHIL UNCLE (MSEB)",

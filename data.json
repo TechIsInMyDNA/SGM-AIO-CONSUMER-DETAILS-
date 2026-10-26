@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-10-25",
+  "last_sync": "2026-10-26",
   "accounts": [
     {
       "category": "MSEB",
@@ -375,8 +375,8 @@
       "due_date": "2026-09-28",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-09-29",
-      "last_paid_amount": "920"
+      "last_paid_date": "2026-10-26",
+      "last_paid_amount": "870"
     },
     {
       "category": "MSEB",
@@ -620,6 +620,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "26/10/2026, 5:22:04 pm",
+      "target": "PANPALIYA (MSEB)",
+      "id": "430010200479",
+      "amount": "870",
+      "mode": "Credit Card",
+      "notes": "HDFC 7277/HGAMP13D320570158227"
+    },
     {
       "date": "25/10/2026, 8:00:43 pm",
       "target": "PAYAL JEWELLERS (MSEB)",

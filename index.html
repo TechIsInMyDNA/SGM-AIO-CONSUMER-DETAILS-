@@ -182,7 +182,7 @@
           Sync
         </button>
         <button class="btn-ghost" onclick="openRepoConfig()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Repo Config
         </button>
         <button class="btn-ghost" onclick="exportBackup()">
@@ -486,8 +486,8 @@
       <input type="text" id="cfgRepo">
     </div>
     <div class="field-group">
-      <label>Branch Name</label>
-      <input type="text" id="cfgBranch" value="main">
+      <label>Branch Name (Auto-Separated from Pages Deploy)</label>
+      <input type="text" id="cfgBranch" value="data">
     </div>
     <div class="field-group">
       <label>Data File Name</label>
@@ -568,7 +568,7 @@ function getGitHubToken() {
 
 /* ========================================================================== */
 
-// Auto-detect GitHub Repo details from current browser URL with Hyphen Guard
+// Auto-detect GitHub Repo details with Dedicated Data Branch (Stops Pages Auto-Deploy)
 function getAutoRepoInfo() {
   const host = window.location.hostname;
   const pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -596,7 +596,7 @@ function getAutoRepoInfo() {
   return {
     user: savedCfg.user || user,
     repo: finalRepo,
-    branch: savedCfg.branch || 'main',
+    branch: savedCfg.branch || 'data', // Dedicated data branch so GitHub Pages never rebuilds
     file: savedCfg.file || 'data.json'
   };
 }
@@ -722,14 +722,11 @@ function advanceDateByCycle(targetDate, recurFreq, customDays, origDay, baseYear
   } else if (recurFreq === 'weekly') {
     targetDate.setDate(targetDate.getDate() + 7);
   } else if (recurFreq === 'monthly') {
-    // Add month without native JS month-overflow jump
     const nextTotalMonth = baseMonth + cycleCount;
     const nextYear = baseYear + Math.floor(nextTotalMonth / 12);
     const nextMonth = nextTotalMonth % 12;
     
-    // Find last day of target month (28, 29, 30 or 31)
     const maxDaysInNextMonth = new Date(nextYear, nextMonth + 1, 0).getDate();
-    // Clamping: agar original tareeq 31 thi aur month me 30 ya 28 days hain, clamp to last day!
     const clampedDay = Math.min(origDay, maxDaysInNextMonth);
     
     targetDate.setFullYear(nextYear, nextMonth, clampedDay);
@@ -1069,7 +1066,7 @@ function switchAddDueType(type) {
 function handleAddFreqChange() {
   const type = document.querySelector('input[name="addDueTypeRadio"]:checked').value;
   const freq = document.getElementById('addRecurFreq').value;
-  document.getElementById('addCustomDaysBox').style.display = (type === 'recurring' && freq === 'custom') ? 'block' : 'none';
+  document.getElementById('cardCustomDaysBox').style.display = (type === 'recurring' && freq === 'custom') ? 'block' : 'none';
 }
 
 function openAddModal() {
@@ -1442,13 +1439,53 @@ function saveRepoConfig() {
   const cfg = {
     user: document.getElementById('cfgUser').value.trim(),
     repo: document.getElementById('cfgRepo').value.trim(),
-    branch: document.getElementById('cfgBranch').value.trim(),
+    branch: document.getElementById('cfgBranch').value.trim() || 'data',
     file: document.getElementById('cfgFile').value.trim()
   };
   localStorage.setItem('sgm_repo_cfg', JSON.stringify(cfg));
   closeRepoConfig();
   showToast("Repo Config Saved!");
   syncWithGitHub(false, false);
+}
+
+// ============================================================================
+// AUTO-BRANCH DATA SYNC ENGINE (Prevents GitHub Pages Rebuild on Every Sync)
+// ============================================================================
+async function ensureDataBranch(token, user, repo, branch) {
+  const authHeader = `token ${token}`;
+  const checkUrl = `https://api.github.com/repos/${user}/${repo}/branches/${branch}`;
+  const checkRes = await fetch(checkUrl, {
+    headers: { 'Authorization': authHeader, 'Accept': 'application/vnd.github.v3+json' }
+  });
+
+  if (checkRes.ok) return true;
+
+  // Agar target branch exist nahi karti toh main branch ka latest sha nikaal kar create karein
+  try {
+    const mainRefRes = await fetch(`https://api.github.com/repos/${user}/${repo}/git/ref/heads/main`, {
+      headers: { 'Authorization': authHeader, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    if (!mainRefRes.ok) return false;
+    const mainRefData = await mainRefRes.json();
+    const sha = mainRefData.object.sha;
+
+    const createBranchRes = await fetch(`https://api.github.com/repos/${user}/${repo}/git/refs`, {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify({
+        ref: `refs/heads/${branch}`,
+        sha: sha
+      })
+    });
+    return createBranchRes.ok;
+  } catch (e) {
+    console.warn("Branch auto-creation fallback:", e);
+    return false;
+  }
 }
 
 // Robust GitHub 2-Way Seamless Live Sync Engine
@@ -1469,7 +1506,17 @@ async function syncWithGitHub(isSilent = false, isPush = false) {
   if(txt) txt.innerText = isPush ? 'Pushing...' : 'Live syncing...';
 
   try {
-    const url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${cfg.file}?ref=${cfg.branch}&_t=${Date.now()}`;
+    let activeBranch = cfg.branch || 'data';
+    
+    // First-time safety: check or auto-create branch from main
+    if (activeBranch !== 'main') {
+      const branchReady = await ensureDataBranch(token, cfg.user, cfg.repo, activeBranch);
+      if (!branchReady) {
+        activeBranch = 'main'; // Fallback to main if creation not supported
+      }
+    }
+
+    const url = `https://api.github.com/repos/${cfg.user}/${cfg.repo}/contents/${cfg.file}?ref=${activeBranch}&_t=${Date.now()}`;
     
     const getRes = await fetch(url, {
       cache: 'no-store',
@@ -1487,7 +1534,8 @@ async function syncWithGitHub(isSilent = false, isPush = false) {
       sha = fileObj.sha;
       remoteData = JSON.parse(decodeURIComponent(escape(atob(fileObj.content))));
     } else if(getRes.status === 404) {
-      throw new Error(`Repository '${cfg.repo}' or '${cfg.file}' not found on branch '${cfg.branch}'. Check Repo Config.`);
+      // Agar branch par data.json abhi nahi bana hai toh pehli baar create hone dega
+      sha = null;
     } else if(getRes.status === 401) {
       throw new Error(`Invalid GitHub Token (401 Bad Credentials). Please re-check token.`);
     } else {
@@ -1525,7 +1573,7 @@ async function syncWithGitHub(isSilent = false, isPush = false) {
       body: JSON.stringify({
         message: `Auto Live Sync [${new Date().toISOString().slice(0,16)}]`,
         content: payload,
-        branch: cfg.branch,
+        branch: activeBranch,
         sha: sha || undefined
       })
     });

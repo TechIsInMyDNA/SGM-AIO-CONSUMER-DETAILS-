@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-11-05",
+  "last_sync": "2026-11-08",
   "accounts": [
     {
       "category": "MSEB",
@@ -313,8 +313,8 @@
       "due_date": "2026-08-28",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-09-26",
-      "last_paid_amount": "2870"
+      "last_paid_date": "2026-11-08",
+      "last_paid_amount": "4900"
     },
     {
       "category": "MSEB",
@@ -620,6 +620,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "8/11/2026, 1:09:34 pm",
+      "target": "MYSELF (MSEB)",
+      "id": "430010243640",
+      "amount": "4900",
+      "mode": "Credit Card",
+      "notes": "Hdfc 7277/HGAMP030140653981814"
+    },
     {
       "date": "26/10/2026, 5:37:00 pm",
       "target": "SUSHIL UNCLE (MSEB)",

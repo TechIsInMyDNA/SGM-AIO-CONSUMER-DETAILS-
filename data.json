@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-11-05",
+  "last_sync": "2026-11-13",
   "accounts": [
     {
       "category": "TEST",
@@ -20,8 +20,8 @@
       "due_date": "2026-10-19",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-17",
-      "last_paid_amount": "1280"
+      "last_paid_date": "2026-11-13",
+      "last_paid_amount": "1490"
     },
     {
       "category": "MSEB",
@@ -629,6 +629,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "13/11/2026, 10:47:22 am",
+      "target": "VIJAY MUNDRA (MSEB)",
+      "id": "430010202889",
+      "amount": "1490",
+      "mode": "Credit Card",
+      "notes": "AMZN/CC/AZ016317104647fYaLV6"
+    },
     {
       "date": "26/10/2026, 5:37:00 pm",
       "target": "SUSHIL UNCLE (MSEB)",

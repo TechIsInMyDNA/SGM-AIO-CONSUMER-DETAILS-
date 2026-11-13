@@ -584,7 +584,7 @@
       "id": "0102612075",
       "extra": "Municipal Council Gondia",
       "name": "VIJAYKUMAR R MUNDRA",
-      "last_paid_date": "2026-09-19",
+      "last_paid_date": "2026-11-13",
       "last_paid_amount": "430",
       "due_date": "2026-09-19",
       "due_type": "recurring",
@@ -629,6 +629,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "13/11/2026, 10:50:49 am",
+      "target": "VIJAY MUNDRA (WATER BILL)",
+      "id": "0102612075",
+      "amount": "430",
+      "mode": "Paytm (UPI)",
+      "notes": "PYTM/AU/319070527896"
+    },
     {
       "date": "13/11/2026, 10:47:22 am",
       "target": "VIJAY MUNDRA (MSEB)",

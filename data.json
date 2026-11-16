@@ -354,8 +354,8 @@
       "id": "430011467525",
       "extra": "BU: 1937",
       "name": "SUMIT JAWAHAR MISHRA",
-      "last_paid_date": "2026-10-16",
-      "last_paid_amount": "1060"
+      "last_paid_date": "2026-11-16",
+      "last_paid_amount": "700"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/11/2026, 5:38:32 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430011467525",
+      "amount": "700",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/9206981018427"
+    },
     {
       "date": "16/11/2026, 5:32:59 pm",
       "target": "SUMIT MISHRA (WATER BILL)",

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-11-13",
+  "last_sync": "2026-11-16",
   "accounts": [
     {
       "category": "TEST",
@@ -128,8 +128,8 @@
       "due_date": "2026-09-15",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-17",
-      "last_paid_amount": "870"
+      "last_paid_date": "2026-11-16",
+      "last_paid_amount": "1600"
     },
     {
       "category": "MSEB",
@@ -629,6 +629,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/11/2026, 5:23:22 pm",
+      "target": "ASHWIN UNCLE (MSEB)",
+      "id": "430017341264",
+      "amount": "1600",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/404164500637"
+    },
     {
       "date": "13/11/2026, 10:50:49 am",
       "target": "VIJAY MUNDRA (WATER BILL)",

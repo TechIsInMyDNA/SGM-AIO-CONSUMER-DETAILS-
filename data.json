@@ -336,7 +336,7 @@
       "id": "430011467517",
       "extra": "BU: 1937",
       "name": "HIRA JAWAHAR MISHRA",
-      "last_paid_date": "2026-10-16",
+      "last_paid_date": "2026-11-16",
       "last_paid_amount": "550"
     },
     {
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/11/2026, 5:42:41 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430011467517",
+      "amount": "550",
+      "mode": "Credit Card",
+      "notes": "AMZN/CC/AZ0163201742118dfkfT"
+    },
     {
       "date": "16/11/2026, 5:38:32 pm",
       "target": "SUMIT MISHRA (MSEB)",

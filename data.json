@@ -23,8 +23,8 @@
       "due_date": "2026-10-17",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-16",
-      "last_paid_amount": "6940"
+      "last_paid_date": "2026-11-16",
+      "last_paid_amount": "7030"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/11/2026, 6:07:12 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430010087893",
+      "amount": "7030",
+      "mode": "Credit Card",
+      "notes": "AMZN/CC/AZ016320180653apQ7v"
+    },
     {
       "date": "16/11/2026, 5:53:42 pm",
       "target": "SUMIT MISHRA (MSEB)",

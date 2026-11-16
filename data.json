@@ -539,7 +539,9 @@
       "person": "SUMIT MISHRA",
       "id": "102605632",
       "extra": "Municipal Council Gondia",
-      "name": "JAWAHAR PANNALAL MISHRA"
+      "name": "JAWAHAR PANNALAL MISHRA",
+      "last_paid_date": "2026-11-16",
+      "last_paid_amount": "500"
     },
     {
       "category": "CC BILLS",
@@ -620,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/11/2026, 5:32:59 pm",
+      "target": "SUMIT MISHRA (WATER BILL)",
+      "id": "102605632",
+      "amount": "500",
+      "mode": "Paytm (UPI)",
+      "notes": "PYTM/AU/319316997767"
+    },
     {
       "date": "11/11/2026, 12:17:00 pm",
       "target": "PAPPU CHHITARKA (MSEB)",

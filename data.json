@@ -345,8 +345,8 @@
       "id": "430010041605",
       "extra": "BU: 1937",
       "name": "SHRI PANNALAL DIVEDDIN PATWARI",
-      "last_paid_date": "2026-10-16",
-      "last_paid_amount": "1320"
+      "last_paid_date": "2026-11-16",
+      "last_paid_amount": "1520"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "16/11/2026, 5:53:42 pm",
+      "target": "SUMIT MISHRA (MSEB)",
+      "id": "430010041605",
+      "amount": "1520",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/9060180035056"
+    },
     {
       "date": "16/11/2026, 5:45:18 pm",
       "target": "SUMIT MISHRA (MSEB)",

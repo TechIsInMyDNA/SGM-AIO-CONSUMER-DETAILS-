@@ -143,8 +143,8 @@
       "due_date": "2026-09-17",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-19",
-      "last_paid_amount": "5260"
+      "last_paid_date": "2026-11-17",
+      "last_paid_amount": "5910"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "17/11/2026, 6:09:32 pm",
+      "target": "ASHWIN UNCLE (MSEB)",
+      "id": "430010161597",
+      "amount": "5910",
+      "mode": "Credit Card",
+      "notes": "AMZN/CC/AZ016321180900BzjV0F"
+    },
     {
       "date": "17/11/2026, 6:05:55 pm",
       "target": "ASHWIN UNCLE (MSEB)",

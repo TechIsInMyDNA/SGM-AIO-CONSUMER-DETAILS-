@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-11-16",
+  "last_sync": "2026-11-17",
   "accounts": [
     {
       "category": "MSEB",
@@ -131,8 +131,8 @@
       "due_date": "2026-09-17",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-19",
-      "last_paid_amount": "3490"
+      "last_paid_date": "2026-11-17",
+      "last_paid_amount": "4130"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "17/11/2026, 6:05:55 pm",
+      "target": "ASHWIN UNCLE (MSEB)",
+      "id": "430010202111",
+      "amount": "4130",
+      "mode": "Credit Card",
+      "notes": "BOB UNI/CC/MAHA/8427192124017"
+    },
     {
       "date": "16/11/2026, 6:07:12 pm",
       "target": "SUMIT MISHRA (MSEB)",

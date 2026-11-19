@@ -221,8 +221,8 @@
       "due_date": "2026-10-28",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-13",
-      "last_paid_amount": "910"
+      "last_paid_date": "2026-11-19",
+      "last_paid_amount": "980"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "19/11/2026, 5:56:11 pm",
+      "target": "SANJU UNCLE (MSEB)",
+      "id": "430014490838",
+      "amount": "980",
+      "mode": "Credit Card",
+      "notes": "Rbl cc 1508/HGANP0C4020010525436"
+    },
     {
       "date": "19/11/2026, 5:53:53 pm",
       "target": "SANJU UNCLE (MSEB)",

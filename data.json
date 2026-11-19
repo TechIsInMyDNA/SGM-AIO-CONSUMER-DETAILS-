@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-11-17",
+  "last_sync": "2026-11-19",
   "accounts": [
     {
       "category": "MSEB",
@@ -168,8 +168,8 @@
       "id": "430010145648",
       "extra": "BU: 1937",
       "name": "THE CHIEF OFFICER M.C.",
-      "last_paid_date": "2026-10-13",
-      "last_paid_amount": "1920",
+      "last_paid_date": "2026-11-19",
+      "last_paid_amount": "2090",
       "due_date": "2026-11-19",
       "due_type": "recurring",
       "due_recur": "monthly"
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "19/11/2026, 5:53:53 pm",
+      "target": "SANJU UNCLE (MSEB)",
+      "id": "430010145648",
+      "amount": "2090",
+      "mode": "Credit Card",
+      "notes": "Rbl cc 1508/HGANP15BAB0010513879"
+    },
     {
       "date": "17/11/2026, 6:09:32 pm",
       "target": "ASHWIN UNCLE (MSEB)",

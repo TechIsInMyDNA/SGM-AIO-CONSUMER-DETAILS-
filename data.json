@@ -241,7 +241,9 @@
       "person": "LUCKY BHIYA",
       "id": "430010421505",
       "extra": "BU: 1937",
-      "name": "SHRI LUCCY VIJAY JYMAR KHADELWAL"
+      "name": "SHRI LUCCY VIJAY JYMAR KHADELWAL",
+      "last_paid_date": "2026-11-21",
+      "last_paid_amount": "2950"
     },
     {
       "category": "MSEB",
@@ -622,6 +624,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "21/11/2026, 7:44:09 pm",
+      "target": "LUCKY BHIYA (MSEB)",
+      "id": "430010421505",
+      "amount": "2950",
+      "mode": "Credit Card",
+      "notes": "RBL CC 2060/HGANP0F8B00023219228"
+    },
     {
       "date": "21/11/2026, 3:17:57 pm",
       "target": "MYSELF (MSEB)",

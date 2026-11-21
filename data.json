@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "last_sync": "2026-11-20",
+  "last_sync": "2026-11-21",
   "accounts": [
     {
       "category": "MSEB",
@@ -313,8 +313,8 @@
       "due_date": "2026-08-28",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-11-08",
-      "last_paid_amount": "4900"
+      "last_paid_date": "2026-11-21",
+      "last_paid_amount": "3690"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "21/11/2026, 3:17:08 pm",
+      "target": "MYSELF (MSEB)",
+      "id": "430010243640",
+      "amount": "3690",
+      "mode": "Credit Card",
+      "notes": "RBL CC 1662/HGANP127550021684132"
+    },
     {
       "date": "20/11/2026, 4:22:50 pm",
       "target": "SANJU UNCLE (MSEB)",

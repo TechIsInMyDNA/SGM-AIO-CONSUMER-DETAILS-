@@ -301,8 +301,8 @@
       "due_date": "2026-09-17",
       "due_type": "recurring",
       "due_recur": "monthly",
-      "last_paid_date": "2026-10-17",
-      "last_paid_amount": "2490"
+      "last_paid_date": "2026-11-21",
+      "last_paid_amount": "2920"
     },
     {
       "category": "MSEB",
@@ -622,6 +622,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "21/11/2026, 3:17:57 pm",
+      "target": "MYSELF (MSEB)",
+      "id": "430010145699",
+      "amount": "2920",
+      "mode": "Credit Card",
+      "notes": "RBL CC 1662/HGANP1437A0021688936"
+    },
     {
       "date": "21/11/2026, 3:17:08 pm",
       "target": "MYSELF (MSEB)",

@@ -9,7 +9,9 @@
       "name": "SACHIV KHANDELWAL YUVAK MANDAL",
       "extra": "",
       "due_date": "",
-      "due_type": "one_time"
+      "due_type": "one_time",
+      "last_paid_date": "2026-11-23",
+      "last_paid_amount": "1200"
     },
     {
       "category": "MSEB",
@@ -633,6 +635,14 @@
     }
   ],
   "payment_history": [
+    {
+      "date": "23/11/2026, 8:16:05 pm",
+      "target": "LUCKY KHANDELWAL (MSEB)",
+      "id": "430013169793",
+      "amount": "1200",
+      "mode": "Credit Card",
+      "notes": "RBL CC 2060/HGANP0B6880035162351"
+    },
     {
       "date": "21/11/2026, 7:44:09 pm",
       "target": "LUCKY BHIYA (MSEB)",
